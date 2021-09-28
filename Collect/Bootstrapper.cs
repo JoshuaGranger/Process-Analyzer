@@ -9,7 +9,9 @@ namespace Collect
     {
         protected override void ConfigureIoC(IStyletIoCBuilder builder)
         {
-            // Configure the IoC container in here
+            base.ConfigureIoC(builder);
+
+            builder.Bind<IDialogFactory>().ToAbstractFactory();
         }
 
         protected override void Configure()
