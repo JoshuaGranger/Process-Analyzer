@@ -146,6 +146,8 @@
     <Compile Include="Bootstrapper.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\Datum.cs" />
+    <Compile Include="Models\File.cs" />
     <Compile Include="Models\Tag.cs" />
     <Compile Include="Pages\DatalogDialogView.xaml.cs">
       <DependentUpon>DatalogDialogView.xaml</DependentUpon>
