@@ -3,7 +3,15 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:s="https://github.com/canton7/Stylet"
         Title="About" Height="145" Width="300">
-    <Grid>
-        
-    </Grid>
+    <StackPanel Orientation="Vertical">
+        <Label FontWeight="Bold" Content="Collect"/>
+        <StackPanel Orientation="Horizontal">
+            <Label FontWeight="Bold" Content="Version:" Width="100"/>
+            <Label Content="{Binding Version}"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <Label FontWeight="Bold" Content="Build date:" Width="100"/>
+            <Label Content="{Binding Version}"/>
+        </StackPanel>
+    </StackPanel>
 </Window>

@@ -1,6 +1,7 @@
 ﻿using ScottPlot;
 using Stylet;
 using System;
+using System.Threading.Tasks;
 
 namespace Collect.Pages
 {
@@ -61,42 +62,42 @@ namespace Collect.Pages
         #endregion
 
         #region Actions
-        public async System.Threading.Tasks.Task Connect()
+        public async Task Connect()
         {
             AllowConnect = false;
             AllowDisconnect = !AllowConnect;
         }
 
-        public async System.Threading.Tasks.Task Disconnect()
+        public async Task Disconnect()
         {
             AllowConnect = true;
             AllowDisconnect = !AllowConnect;
         }
 
-        public async System.Threading.Tasks.Task LockXAxis()
+        public async Task LockXAxis()
         {
             WpfPlot.Plot.XAxis.LockLimits(XLocked = !XLocked);
         }
 
-        public async System.Threading.Tasks.Task LockYAxis()
+        public async Task LockYAxis()
         {
             WpfPlot.Plot.YAxis.LockLimits(YLocked = !YLocked);
         }
 
-        public async System.Threading.Tasks.Task ShowServerDialog()
+        public async Task ShowServerDialog()
         {
             var dialogVm = this.dialogFactory.CreateServerDialog();
             var result = this.windowManager.ShowDialog(dialogVm);
             Connect();
         }
 
-        public async System.Threading.Tasks.Task ShowDatalogDialog()
+        public async Task ShowDatalogDialog()
         {
             var dialogVm = this.dialogFactory.CreateDatalogDialog();
             var result = this.windowManager.ShowDialog(dialogVm);
         }
 
-        public async System.Threading.Tasks.Task ShowAboutDialog()
+        public async Task ShowAboutDialog()
         {
             var dialogVm = this.dialogFactory.CreateAboutDialog();
             var result = this.windowManager.ShowDialog(dialogVm);
