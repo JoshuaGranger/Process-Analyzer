@@ -6,9 +6,11 @@ namespace Collect.Pages
 {
     public class ShellViewModel : Screen
     {
+        #region Properties
         private IWindowManager windowManager;
         private IDialogFactory dialogFactory;
 
+        // Plot Properties
         private WpfPlot _wpfPlot;
         public WpfPlot WpfPlot
         {
@@ -28,6 +30,22 @@ namespace Collect.Pages
             set { SetAndNotify(ref _yLocked, value); }
         }
 
+        // OPC Properties
+        private bool _allowConnect;
+        public bool AllowConnect
+        {
+            get { return _allowConnect; }
+            set { SetAndNotify(ref _allowConnect, value); }
+        }
+        private bool _allowDisconnect;
+        public bool AllowDisconnect
+        {
+            get { return _allowDisconnect; }
+            set { SetAndNotify(ref _allowDisconnect, value); }
+        }
+        #endregion
+
+        #region Constructor
         public ShellViewModel(IWindowManager windowManager, IDialogFactory dialogFactory)
         {
             this.windowManager = windowManager;
@@ -37,6 +55,22 @@ namespace Collect.Pages
             WpfPlot.Refresh();
             XLocked = false;
             _yLocked = false;
+            AllowConnect = true;
+            AllowDisconnect = !AllowConnect;
+        }
+        #endregion
+
+        #region Actions
+        public async System.Threading.Tasks.Task Connect()
+        {
+            AllowConnect = false;
+            AllowDisconnect = !AllowConnect;
+        }
+
+        public async System.Threading.Tasks.Task Disconnect()
+        {
+            AllowConnect = true;
+            AllowDisconnect = !AllowConnect;
         }
 
         public async System.Threading.Tasks.Task LockXAxis()
@@ -53,6 +87,7 @@ namespace Collect.Pages
         {
             var dialogVm = this.dialogFactory.CreateServerDialog();
             var result = this.windowManager.ShowDialog(dialogVm);
+            Connect();
         }
 
         public async System.Threading.Tasks.Task ShowDatalogDialog()
@@ -66,6 +101,7 @@ namespace Collect.Pages
             var dialogVm = this.dialogFactory.CreateAboutDialog();
             var result = this.windowManager.ShowDialog(dialogVm);
         }
+        #endregion
     }
 
     public interface IDialogFactory

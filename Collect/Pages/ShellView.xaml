@@ -6,8 +6,8 @@
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_Server">
-                <MenuItem Header="_Connect" Command="{s:Action ShowServerDialog}"/>
-                <MenuItem Header="_Disconnect" Command="{Binding Disconnect}"/>
+                <MenuItem Header="_Connect" Command="{s:Action ShowServerDialog}" IsEnabled="{Binding AllowConnect}"/>
+                <MenuItem Header="_Disconnect" Command="{s:Action Disconnect}" IsEnabled="{Binding AllowDisconnect}"/>
             </MenuItem>
             <MenuItem Header="_Data Collection">
                 <MenuItem Header="_Change update rate" Command="{s:Action ShowDatalogDialog}"/>

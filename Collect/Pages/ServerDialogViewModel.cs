@@ -12,6 +12,13 @@ namespace Collect.Pages
             this.DisplayName = "I'm Dialog 1";
         }
 
+        #region Actions
+        public async System.Threading.Tasks.Task Connect()
+        {
+            
+        }
+        #endregion
+
         public void Close()
         {
             this.RequestClose(null);
