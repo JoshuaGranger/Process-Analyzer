@@ -8,10 +8,10 @@ using System.Windows;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Collect")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Collect and trend OPC data")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Collect")]
+[assembly: AssemblyCompany("Joshua Granger")]
+[assembly: AssemblyProduct("Process Analyzer")]
 [assembly: AssemblyCopyright("Copyright ©  2021")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
