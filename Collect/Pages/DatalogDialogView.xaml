@@ -4,6 +4,5 @@
         xmlns:s="https://github.com/canton7/Stylet"
         Title="Datalog Settings" Height="145" Width="300">
     <Grid>
-        <ContentControl Content="{Binding WpfPlot}"/>
     </Grid>
 </Window>

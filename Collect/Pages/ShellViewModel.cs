@@ -2,6 +2,7 @@
 using Stylet;
 using System;
 using System.Threading.Tasks;
+using TitaniumAS.Opc.Client.Da;
 
 namespace Collect.Pages
 {
@@ -43,6 +44,12 @@ namespace Collect.Pages
         {
             get { return _allowDisconnect; }
             set { SetAndNotify(ref _allowDisconnect, value); }
+        }
+        private OpcDaServer _server;
+        public OpcDaServer Server
+        {
+            get { return _server; }
+            set { SetAndNotify(ref _server, value); }
         }
         #endregion
 
@@ -88,7 +95,8 @@ namespace Collect.Pages
         {
             var dialogVm = this.dialogFactory.CreateServerDialog();
             var result = this.windowManager.ShowDialog(dialogVm);
-            Connect();
+            //if (result.GetValueOrDefault())
+                
         }
 
         public async Task ShowDatalogDialog()
