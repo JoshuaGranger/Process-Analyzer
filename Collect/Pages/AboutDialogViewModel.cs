@@ -1,5 +1,6 @@
 ﻿using Stylet;
 using System;
+using System.Diagnostics;
 using System.Reflection;
 
 namespace Collect.Pages
@@ -18,21 +19,35 @@ namespace Collect.Pages
             get { return _buildDate; }
             set { SetAndNotify(ref _buildDate, value); }
         }
+        private string _description;
+        public string Description
+        {
+            get { return _description; }
+            set { SetAndNotify(ref _description, value); }
+        }
 
         public AboutDialogViewModel()
         {
             Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            //Version = Assembly.GetExecutingAssembly().GetName().Bui
+            
+            var days = Assembly.GetExecutingAssembly().GetName().Version.Build;
+            DateTime startDate = new DateTime(2000, 1, 1);
+            BuildDate = startDate.AddDays(days).ToShortDateString();
+            
+            Description =
+                "Collect is a real-time OPC data collection and trending tool. Features include exporting/importing tag sets, adjustable " +
+                "data resolution (update rate), writing recorded data to file, and an interactive plot.\n\nFor questions, bugs, or feature requests, " +
+                "please use the 'Issues' section on the project Github page.";
+        }
+
+        public void Navigate()
+        {
+            Process.Start(new ProcessStartInfo(@"https://github.com/JoshuaGranger/Process-Analyzer"));
         }
 
         public void Close()
         {
             this.RequestClose(null);
-        }
-
-        public void Save()
-        {
-            this.RequestClose(true);
         }
     }
 }

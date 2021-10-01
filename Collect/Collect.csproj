@@ -170,6 +170,10 @@
       <DependentUpon>DatalogDialogView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\DatalogDialogViewModel.cs" />
+    <Compile Include="Pages\RateDialogView.xaml.cs">
+      <DependentUpon>RateDialogView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\RateDialogViewModel.cs" />
     <Compile Include="Pages\ServerDialogView.xaml.cs">
       <DependentUpon>ServerDialogView.xaml</DependentUpon>
     </Compile>
@@ -210,6 +214,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\DatalogDialogView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\RateDialogView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

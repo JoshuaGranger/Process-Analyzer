@@ -51,6 +51,12 @@ namespace Collect.Pages
             get { return _server; }
             set { SetAndNotify(ref _server, value); }
         }
+        private int _groupUpdateRate;
+        public int GroupUpdateRate
+        {
+            get { return _groupUpdateRate; }
+            set { SetAndNotify(ref _groupUpdateRate, value); }
+        }
         #endregion
 
         #region Constructor
@@ -65,6 +71,7 @@ namespace Collect.Pages
             _yLocked = false;
             AllowConnect = true;
             AllowDisconnect = !AllowConnect;
+            GroupUpdateRate = 500;
         }
         #endregion
 
@@ -96,13 +103,21 @@ namespace Collect.Pages
             var dialogVm = this.dialogFactory.CreateServerDialog();
             var result = this.windowManager.ShowDialog(dialogVm);
             //if (result.GetValueOrDefault())
-                
         }
 
         public async Task ShowDatalogDialog()
         {
             var dialogVm = this.dialogFactory.CreateDatalogDialog();
             var result = this.windowManager.ShowDialog(dialogVm);
+        }
+
+        public async Task ShowRateDialog()
+        {
+            var dialogVm = this.dialogFactory.CreateRateDialog();
+            dialogVm.GroupUpdateRate = this.GroupUpdateRate.ToString();
+            var result = this.windowManager.ShowDialog(dialogVm);
+            if (result.GetValueOrDefault())
+                GroupUpdateRate = int.Parse(dialogVm.GroupUpdateRate);
         }
 
         public async Task ShowAboutDialog()
@@ -117,6 +132,7 @@ namespace Collect.Pages
     {
         ServerDialogViewModel CreateServerDialog();
         DatalogDialogViewModel CreateDatalogDialog();
+        RateDialogViewModel CreateRateDialog();
         AboutDialogViewModel CreateAboutDialog();
     }
 }

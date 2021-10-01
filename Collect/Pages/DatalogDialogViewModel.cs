@@ -5,7 +5,13 @@ namespace Collect.Pages
 {
     public class DatalogDialogViewModel : Screen
     {
-        
+        private int _updateRate;
+        public int UpdateRate
+        {
+            get { return _updateRate; }
+            set { SetAndNotify(ref _updateRate, value); }
+        }
+
 
         public DatalogDialogViewModel()
         {

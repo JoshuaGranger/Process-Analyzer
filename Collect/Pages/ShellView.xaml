@@ -10,7 +10,7 @@
                 <MenuItem Header="_Disconnect" Command="{s:Action Disconnect}" IsEnabled="{Binding AllowDisconnect}"/>
             </MenuItem>
             <MenuItem Header="_Data">
-                <MenuItem Header="_Change update rate" Command="{s:Action ShowDatalogDialog}"/>
+                <MenuItem Header="_Change update rate" Command="{s:Action ShowRateDialog}"/>
                 <MenuItem Header="_Save data to file" Command="{s:Action ShowDatalogDialog}"/>
             </MenuItem>
             <MenuItem Header="_Plot">
