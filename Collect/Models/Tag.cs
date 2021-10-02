@@ -1,43 +1,52 @@
-﻿using Stylet;
+﻿using ScottPlot.Plottable;
+using Stylet;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using TitaniumAS.Opc.Client.Da;
 
 namespace Collect.Models
 {
-    class Tag : PropertyChangedBase
+    public class Tag : PropertyChangedBase
     {
         #region Properties
-        // OPC Properties
         private OpcDaItemDefinition _definition;
         public OpcDaItemDefinition Definition
         {
             get { return _definition; }
             set { this.SetAndNotify(ref this._definition, value); }
         }
-        // Plot Properties
-        private Color _traceColor;
-        public Color TraceColor
+        private List<double[]> _data;
+        public List<double[]> Data
         {
-            get { return _traceColor; }
-            set { this.SetAndNotify(ref this._traceColor, value); }
+            get { return _data; }
+            set { SetAndNotify(ref _data, value); }
         }
-        private bool _isHidden;
-        public bool IsHidden
+        private TagBase _tagBase;
+        public TagBase TagBase
         {
-            get { return _isHidden; }
-            set { this.SetAndNotify(ref this._isHidden, value); }
+            get { return _tagBase; }
+            set { SetAndNotify(ref _tagBase, value); }
         }
-        private double _plotMin;
-        public double PlotMin
+        #endregion
+
+        #region Constructor
+        public Tag(string tagName, Color color, double scaleYMin, double scaleYMax)
         {
-            get { return _plotMin; }
-            set { this.SetAndNotify(ref this._plotMin, value); }
-        }
-        private double _plotMax;
-        public double PlotMax
-        {
-            get { return _plotMax; }
-            set { this.SetAndNotify(ref this._plotMax, value); }
+            // Tag
+            Definition = new OpcDaItemDefinition();
+            Definition.ItemId = tagName;
+            Definition.IsActive = true;
+            Data = new List<double[]>();
+            // TagBase
+            TagBase = new TagBase();
+            TagBase.ShowTrace = true;
+            TagBase.TraceColor = color;
+            TagBase.TagName = tagName;
+            TagBase.TagShortDesc = tagName;
+            TagBase.ScaleOverride = false;
+            TagBase.PlotYMin = scaleYMin;
+            TagBase.PlotYMax = scaleYMax;
         }
         #endregion
     }

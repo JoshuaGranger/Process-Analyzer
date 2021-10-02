@@ -9,51 +9,69 @@
                 <MenuItem Header="_Connect" Command="{s:Action ShowServerDialog}" IsEnabled="{Binding AllowConnect}"/>
                 <MenuItem Header="_Disconnect" Command="{s:Action Disconnect}" IsEnabled="{Binding AllowDisconnect}"/>
             </MenuItem>
-            <MenuItem Header="_Data">
-                <MenuItem Header="_Change update rate" Command="{s:Action ShowRateDialog}"/>
-                <MenuItem Header="_Save data to file" Command="{s:Action ShowDatalogDialog}"/>
-            </MenuItem>
             <MenuItem Header="_Plot">
                 <MenuItem Header="Lock _X Axis" Command="{s:Action LockXAxis}" IsChecked="{Binding XLocked}"/>
                 <MenuItem Header="Lock _Y Axis" Command="{s:Action LockYAxis}" IsChecked="{Binding YLocked}"/>
                 <Separator/>
-                <MenuItem Header="Scale traces current _window"/>
-                <MenuItem Header="Scale traces _all time"/>
-                <MenuItem Header="_Enable Autoscale"/>
+                <MenuItem Header="Scale traces current _window" Command="{s:Action ScaleToWindow}"/>
+                <MenuItem Header="Scale traces _all time" Command="{s:Action ScaleAllTime}"/>
+                <MenuItem Header="_Enable autoscale Y Axis" IsChecked="{Binding AutoScale}" Command="{s:Action SetAutoScale}"/>
+                <MenuItem Header="Enable auto_scroll" IsChecked="{Binding AutoScale}" Command="{s:Action SetAutoScale}"/>
                 <Separator/>
                 <MenuItem Header="_Save to Bitmap" />
+            </MenuItem>
+            <MenuItem Header="_Data">
+                <MenuItem Header="_Enable data collection" Command="{s:Action DataCollectionEnable}" IsEnabled="{Binding IsNotCollecting}"/>
+                <MenuItem Header="_Disable data collection" Command="{s:Action DataCollectionDisable}" IsEnabled="{Binding IsCollecting}"/>
+                <Separator/>
+                <MenuItem Header="_Change update rate" Command="{s:Action ShowRateDialog}" IsEnabled="{Binding IsNotCollecting}"/>
+                <Separator/>
+                <MenuItem Header="_Save data to file" Command="{s:Action ShowDatalogDialog}" IsEnabled="False"/>
             </MenuItem>
             <MenuItem Header="_Help">
                 <MenuItem Header="_About" Command="{s:Action ShowAboutDialog}"/>
             </MenuItem>
         </Menu>
         <StatusBar DockPanel.Dock="Bottom">
-            <Label Content="Server Status:"/>
-            <Label Content="{Binding OPCServerStatus}"/>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Server Status:"/>
+                <Label Content="{Binding ServerStatus}"/>
+            </StackPanel>
             <Separator/>
-            <Label Content="Server Status:"/>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Data Update Rate (ms):"/>
+                <Label Content="{Binding GroupUpdateRate}"/>
+            </StackPanel>
         </StatusBar>
         <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="300"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <GroupBox Grid.Column="0" Margin="5,5,2.5,5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="150"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <GroupBox Grid.Row="0" Margin="2,2,2,1">
                 <GroupBox.Header>
-                    <TextBlock FontWeight="Bold"
-                           FontSize="12"
-                           Text="Tags"/>
+                    <TextBlock FontWeight="Bold" FontSize="12" Text="Tags"/>
                 </GroupBox.Header>
                 <Grid>
-                    
+                    <DataGrid Margin="2,5,2,2" ItemsSource="{Binding Tags}" AutoGenerateColumns="False" CanUserReorderColumns="False" CanUserSortColumns="True"
+                              CanUserResizeColumns="False" CanUserResizeRows="False" CanUserAddRows="False" CanUserDeleteRows="False" Background="#F6F6F6"
+                              SelectionMode="Single" ColumnHeaderHeight="23">
+                        <DataGrid.Columns>
+                            <DataGridCheckBoxColumn Header="Show" Binding="{Binding TagBase.ShowTrace, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridCheckBoxColumn Header="Color" Binding="{Binding TagBase.ScaleOverride, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Header="Short Description" Width="*" Binding="{Binding TagBase.TagShortDesc, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Tag Path" Width="*" Binding="{Binding TagBase.TagName, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+                            <DataGridCheckBoxColumn Header="Scale Override" Binding="{Binding TagBase.ScaleOverride, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Header="Y Min" Binding="{Binding TagBase.PlotYMin, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="False"/>
+                            <DataGridTextColumn Header="Y Max" Binding="{Binding TagBase.PlotYMax, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="False"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
                 </Grid>
             </GroupBox>
-            <Grid Grid.Column="1" Margin="2.5,5,5,5">
+            <Grid Grid.Row="1" Margin="2.5,5,5,5">
                 <GroupBox>
                     <GroupBox.Header>
-                        <TextBlock FontWeight="Bold"
-                           FontSize="12"
-                           Text="Trend"/>
+                        <TextBlock FontWeight="Bold" FontSize="12" Text="Trend"/>
                     </GroupBox.Header>
                     <Grid>
                         <ContentControl Content="{Binding WpfPlot}"/>

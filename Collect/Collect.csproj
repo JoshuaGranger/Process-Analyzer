@@ -159,9 +159,9 @@
     <Compile Include="Bootstrapper.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\Datum.cs" />
     <Compile Include="Models\File.cs" />
     <Compile Include="Models\Tag.cs" />
+    <Compile Include="Models\TagBase.cs" />
     <Compile Include="Pages\AboutDialogView.xaml.cs">
       <DependentUpon>AboutDialogView.xaml</DependentUpon>
     </Compile>
@@ -182,6 +182,10 @@
       <DependentUpon>ShellView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\ShellViewModel.cs" />
+    <Compile Include="Pages\TagManagerDialogView.xaml.cs">
+      <DependentUpon>TagManagerDialogView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\TagManagerDialogViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -228,6 +232,10 @@
     <Page Include="Pages\ShellView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\TagManagerDialogView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>

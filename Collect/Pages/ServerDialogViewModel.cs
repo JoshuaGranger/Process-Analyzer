@@ -42,7 +42,7 @@ namespace Collect.Pages
             {
                 Server = new OpcDaServer(url);
                 Server.Connect();
-                Close();
+                Save();
             }
             catch (Exception e)
             {
@@ -52,9 +52,14 @@ namespace Collect.Pages
         }
         #endregion
 
-        public void Close()
+        public void Save()
         {
             this.RequestClose(Server != null);
+        }
+
+        public void Close()
+        {
+            this.RequestClose(null);
         }
     }
 }
