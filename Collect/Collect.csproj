@@ -157,35 +157,36 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Bootstrapper.cs" />
+    <Compile Include="Services\TagService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\File.cs" />
     <Compile Include="Models\Tag.cs" />
     <Compile Include="Models\TagBase.cs" />
-    <Compile Include="Pages\AboutDialogView.xaml.cs">
+    <Compile Include="Views\Dialogs\AboutDialogView.xaml.cs">
       <DependentUpon>AboutDialogView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\AboutDialogViewModel.cs" />
-    <Compile Include="Pages\DatalogDialogView.xaml.cs">
+    <Compile Include="ViewModels\Dialogs\AboutDialogViewModel.cs" />
+    <Compile Include="Views\Dialogs\DatalogDialogView.xaml.cs">
       <DependentUpon>DatalogDialogView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\DatalogDialogViewModel.cs" />
-    <Compile Include="Pages\RateDialogView.xaml.cs">
+    <Compile Include="ViewModels\Dialogs\DatalogDialogViewModel.cs" />
+    <Compile Include="Views\Dialogs\RateDialogView.xaml.cs">
       <DependentUpon>RateDialogView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\RateDialogViewModel.cs" />
-    <Compile Include="Pages\ServerDialogView.xaml.cs">
+    <Compile Include="ViewModels\Dialogs\RateDialogViewModel.cs" />
+    <Compile Include="Views\Dialogs\ServerDialogView.xaml.cs">
       <DependentUpon>ServerDialogView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\ServerDialogViewModel.cs" />
-    <Compile Include="Pages\ShellView.xaml.cs">
+    <Compile Include="ViewModels\Dialogs\ServerDialogViewModel.cs" />
+    <Compile Include="Views\ShellView.xaml.cs">
       <DependentUpon>ShellView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\ShellViewModel.cs" />
-    <Compile Include="Pages\TagManagerDialogView.xaml.cs">
-      <DependentUpon>TagManagerDialogView.xaml</DependentUpon>
+    <Compile Include="ViewModels\ShellViewModel.cs" />
+    <Compile Include="Views\Dialogs\TagDialogView.xaml.cs">
+      <DependentUpon>TagDialogView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\TagManagerDialogViewModel.cs" />
+    <Compile Include="ViewModels\Dialogs\TagDialogViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -213,27 +214,27 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Pages\AboutDialogView.xaml">
+    <Page Include="Views\Dialogs\AboutDialogView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\DatalogDialogView.xaml">
+    <Page Include="Views\Dialogs\DatalogDialogView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\RateDialogView.xaml">
+    <Page Include="Views\Dialogs\RateDialogView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\ServerDialogView.xaml">
+    <Page Include="Views\Dialogs\ServerDialogView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\ShellView.xaml">
+    <Page Include="Views\ShellView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Pages\TagManagerDialogView.xaml">
+    <Page Include="Views\Dialogs\TagDialogView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

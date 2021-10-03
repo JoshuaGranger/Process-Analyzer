@@ -99,7 +99,6 @@ namespace Collect.Pages
             get { return _canExportTags; }
             set { SetAndNotify(ref _canExportTags, value); }
         }
-
         #endregion
 
         #region Constructor
@@ -290,6 +289,30 @@ namespace Collect.Pages
             Tags[2].Data.Add(new double[] { 3, 5 });
             Tags[2].Data.Add(new double[] { 4, 4 });
             Tags[2].Data.Add(new double[] { 7, 1 });
+
+            Tags.Add(new Tag("test4", Color.Orange, 0, 0));
+            Tags[3].Data.Add(new double[] { 0, 0 });
+            Tags[3].Data.Add(new double[] { 1, 43 });
+            Tags[3].Data.Add(new double[] { 2, 22 });
+            Tags[3].Data.Add(new double[] { 3, 34 });
+            Tags[3].Data.Add(new double[] { 4, 31 });
+            Tags[3].Data.Add(new double[] { 7, 7 });
+
+            Tags.Add(new Tag("test5", Color.Yellow, 0, 0));
+            Tags[4].Data.Add(new double[] { 0, 6 });
+            Tags[4].Data.Add(new double[] { 1, 6 });
+            Tags[4].Data.Add(new double[] { 2, 6 });
+            Tags[4].Data.Add(new double[] { 3, 6 });
+            Tags[4].Data.Add(new double[] { 4, 6 });
+            Tags[4].Data.Add(new double[] { 7, 6 });
+
+            Tags.Add(new Tag("test6", Color.BlueViolet, 0, 0));
+            Tags[5].Data.Add(new double[] { 0, 3 });
+            Tags[5].Data.Add(new double[] { 1, 3 });
+            Tags[5].Data.Add(new double[] { 2, 3 });
+            Tags[5].Data.Add(new double[] { 3, 3 });
+            Tags[5].Data.Add(new double[] { 4, 3 });
+            Tags[5].Data.Add(new double[] { 7, 3 });
         }
 
         public void PlotAllTags(int timeSpanSeconds)
@@ -305,7 +328,7 @@ namespace Collect.Pages
                     var splt = new SignalPlotXY();
                     splt.Xs = tag.Data.Select(x => x[0]).ToArray();
                     splt.Ys = tag.Data.Select(x => x[1]).ToArray();
-                    splt.Color = tag.TagBase.TraceColor;
+                    splt.Color = tag.TraceColor;
                     splt.MarkerSize = 0;
                     splt.MaxRenderIndex = splt.Xs.Length - 1;
                     splt.MinRenderIndex = 0;

@@ -12,17 +12,11 @@ namespace Collect.Pages
             get { return _groupUpdateRate; }
             set { SetAndNotify(ref _groupUpdateRate, value); UpdateCanSave(); }
         }
-
         private bool _canSave;
         public bool CanSave
         {
             get { return this._canSave; }
             set { this.SetAndNotify(ref this._canSave, value); }
-        }
-
-        public RateDialogViewModel()
-        {
-            
         }
 
         public void UpdateCanSave()
