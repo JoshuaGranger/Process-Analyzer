@@ -129,6 +129,7 @@
     </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -183,10 +184,10 @@
       <DependentUpon>ShellView.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\ShellViewModel.cs" />
-    <Compile Include="Views\Dialogs\TagDialogView.xaml.cs">
-      <DependentUpon>TagDialogView.xaml</DependentUpon>
+    <Compile Include="Views\Dialogs\TagManagerDialogView.xaml.cs">
+      <DependentUpon>TagManagerDialogView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\Dialogs\TagDialogViewModel.cs" />
+    <Compile Include="ViewModels\Dialogs\TagManagerDialogViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -234,16 +235,24 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Dialogs\TagDialogView.xaml">
+    <Page Include="Views\Dialogs\TagManagerDialogView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\Chart.ico" />
-    <Resource Include="Icons\zoom-in.ico" />
-    <Resource Include="Icons\zoom-out.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\TagManager\add.ico" />
+    <Resource Include="Icons\TagManager\copy.ico" />
+    <Resource Include="Icons\TagManager\delete.ico" />
+    <Resource Include="Icons\TagManager\down.ico" />
+    <Resource Include="Icons\TagManager\export.ico" />
+    <Resource Include="Icons\TagManager\import.ico" />
+    <Resource Include="Icons\TagManager\up.ico" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Fody.6.5.2\build\Fody.targets" Condition="Exists('..\packages\Fody.6.5.2\build\Fody.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

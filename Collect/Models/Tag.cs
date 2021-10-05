@@ -8,11 +8,11 @@ namespace Collect.Models
     {
         #region Properties
         // TagBase
-        private string _tagName;
-        public string TagName
+        private string tagId;
+        public string TagId
         {
-            get { return _tagName; }
-            set { SetAndNotify(ref _tagName, value); }
+            get { return tagId; }
+            set { SetAndNotify(ref tagId, value); }
         }
         private string _tagShortDesc;
         public string TagShortDesc
@@ -24,7 +24,7 @@ namespace Collect.Models
         public System.Drawing.Color TraceColor
         {
             get { return _traceColor; }
-            set { SetAndNotify(ref _traceColor, value); }
+            set { SetAndNotify(ref _traceColor, value); TraceToBrush(); }
         }	
         // Other
         private System.Windows.Media.Color _brushColor;
@@ -69,6 +69,7 @@ namespace Collect.Models
             get { return _showTrace; }
             set { SetAndNotify(ref _showTrace, value); }
         }
+        public int UniqueID;
         #endregion
 
         #region Constructor
@@ -84,7 +85,7 @@ namespace Collect.Models
             PlotYMin = scaleYMin;
             ScaleOverride = false;
             ShowTrace = true;
-            TagName = tagName;
+            TagId = tagName;
             TagShortDesc = tagName;
             TraceColor = color;
         }
@@ -93,8 +94,8 @@ namespace Collect.Models
         public Tag(OpcDaItemDefinition definition, string tagShortDesc, System.Drawing.Color color)
         {
             // Base
-            TagName = definition.ItemId;
-            TagShortDesc = TagName;
+            TagId = definition.ItemId;
+            TagShortDesc = TagId;
             TraceColor = System.Drawing.Color.Black;
             // Others
             Definition = definition;
@@ -104,8 +105,12 @@ namespace Collect.Models
             PlotYMin = 0;
             ScaleOverride = false;
             ShowTrace = true;
-            BrushColor = System.Windows.Media.Color.FromArgb(TraceColor.A, TraceColor.R, TraceColor.G, TraceColor.B);
         }
         #endregion
+
+        private void TraceToBrush()
+        {
+            BrushColor = System.Windows.Media.Color.FromArgb(TraceColor.A, TraceColor.R, TraceColor.G, TraceColor.B);
+        }
     }
 }

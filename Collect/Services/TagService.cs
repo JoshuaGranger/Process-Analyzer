@@ -15,7 +15,7 @@ namespace Collect.Services
             throw new NotImplementedException();
         }
 
-        public static void Export(BindableCollection<Tag> tags)
+        public static void Export(BindableCollection<Tag> tags, string path)
         {
             throw new NotImplementedException();
         }

@@ -73,6 +73,7 @@ namespace Collect.Pages
             set { SetAndNotify(ref _serverStatus, value); }
         }
         // Tags and Data
+        private int[] _customColors;
         private bool _isCollecting;
         public bool IsCollecting
         {
@@ -85,6 +86,12 @@ namespace Collect.Pages
             get { return _isNotCollecting; }
             set { SetAndNotify(ref _isNotCollecting, value); }
         }
+        private Tag _selectedTag;
+        public Tag SelectedTag
+        {
+            get { return _selectedTag; }
+            set { SetAndNotify(ref _selectedTag, value); }
+        }	
         private BindableCollection<Tag> _tags;
         public BindableCollection<Tag> Tags
         {
@@ -158,6 +165,27 @@ namespace Collect.Pages
         }
 
         // Tags
+        public async Task ColorChange()
+        {
+            // TODO: make the color changing mechanism more WPF/MVVM-like
+            var tag = SelectedTag;
+            
+            var colorDialog = new System.Windows.Forms.ColorDialog();
+            colorDialog.SolidColorOnly = true;
+            colorDialog.FullOpen = true;
+
+            if (_customColors != null)
+                colorDialog.CustomColors = _customColors;
+
+            var dialogResult = colorDialog.ShowDialog();
+            if (dialogResult == System.Windows.Forms.DialogResult.OK)
+            {
+                tag.TraceColor = colorDialog.Color;
+            }
+
+            _customColors = colorDialog.CustomColors;
+        }
+
         public async Task ImportTags()
         {
 
@@ -236,9 +264,10 @@ namespace Collect.Pages
                 Server = null;
         }
 
-        public async Task ShowTagDialog()
+        public async Task ShowTagManagerDialog()
         {
-            var dialogVm = this.dialogFactory.CreateTagDialog();
+            var dialogVm = this.dialogFactory.CreateTagManagerDialog();
+            dialogVm.Tags = Tags;
             var result = this.windowManager.ShowDialog(dialogVm);
             //if (result.GetValueOrDefault())
             //    Server = dialogVm.Server;
@@ -313,6 +342,13 @@ namespace Collect.Pages
             Tags[5].Data.Add(new double[] { 3, 3 });
             Tags[5].Data.Add(new double[] { 4, 3 });
             Tags[5].Data.Add(new double[] { 7, 3 });
+
+            Tags[0].UniqueID = 0;
+            Tags[1].UniqueID = 1;
+            Tags[2].UniqueID = 2;
+            Tags[3].UniqueID = 3;
+            Tags[4].UniqueID = 4;
+            Tags[5].UniqueID = 5;
         }
 
         public void PlotAllTags(int timeSpanSeconds)
@@ -345,6 +381,6 @@ namespace Collect.Pages
         DatalogDialogViewModel CreateDatalogDialog();
         RateDialogViewModel CreateRateDialog();
         ServerDialogViewModel CreateServerDialog();
-        TagManagerDialogViewModel CreateTagDialog();
+        TagManagerDialogViewModel CreateTagManagerDialog();
     }
 }
