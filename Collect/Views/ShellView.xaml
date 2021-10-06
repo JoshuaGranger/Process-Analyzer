@@ -118,11 +118,11 @@
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
-                                <GridViewColumn Header="Short Description" Width="284">
+                                <GridViewColumn Header="Description" Width="284">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <Label HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" VerticalAlignment="Center"
-                                                     VerticalContentAlignment="Center" Content="{Binding TagShortDesc}" Height="30"/>
+                                                     VerticalContentAlignment="Center" Content="{Binding TagDesc}" Height="30"/>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>

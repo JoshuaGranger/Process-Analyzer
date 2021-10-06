@@ -14,11 +14,11 @@ namespace Collect.Models
             get { return tagId; }
             set { SetAndNotify(ref tagId, value); Definition.ItemId = (TagId != null ? TagId : ""); }
         }
-        private string _tagShortDesc;
-        public string TagShortDesc
+        private string _tagDesc;
+        public string TagDesc
         {
-            get { return _tagShortDesc; }
-            set { SetAndNotify(ref _tagShortDesc, value); }
+            get { return _tagDesc; }
+            set { SetAndNotify(ref _tagDesc, value); }
         }
         private System.Drawing.Color _traceColor;
         public System.Drawing.Color TraceColor
@@ -77,12 +77,12 @@ namespace Collect.Models
             ScaleOverride = false;
             ShowTrace = true;
             TagId = tagName;
-            TagShortDesc = tagName;
+            TagDesc = tagName;
             TraceColor = color;
         }
 
         // GUI Constructor
-        public Tag(OpcDaItemDefinition definition, string tagShortDesc, System.Drawing.Color color)
+        public Tag(OpcDaItemDefinition definition, string tagDesc, System.Drawing.Color color)
         {
             // Others
             Definition = definition;
@@ -93,7 +93,7 @@ namespace Collect.Models
             ShowTrace = true;
             // Base
             TagId = definition.ItemId;
-            TagShortDesc = TagId;
+            TagDesc = TagId;
             TraceColor = color;
         }
         #endregion

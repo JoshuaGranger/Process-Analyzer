@@ -31,8 +31,15 @@ namespace Collect.Pages
                 CanDuplicate = SelectedTag != null;
                 CanMoveUp = (Tags.IndexOf(SelectedTag) > 0);
                 CanMoveDown = (Tags.IndexOf(SelectedTag) < (Tags.Count - 1));
+                IsSelected = (SelectedTag != null);
             }
         }
+        private bool _isSelected;
+        public bool IsSelected
+        {
+            get { return _isSelected; }
+            set { SetAndNotify(ref _isSelected, value); }
+        }	
         public int[] CustomColors;
         // Guard Properties
         private bool _canEdit;
@@ -88,8 +95,8 @@ namespace Collect.Pages
 
         public async Task Add()
         {
-            //Tags.Add(new Tag(new OpcDaItemDefinition(), "", System.Drawing.Color.Black));
-            //SelectedTag = Tags.Last();
+            Tags.Add(new Tag(new OpcDaItemDefinition(), "", System.Drawing.Color.Black));
+            SelectedTag = Tags.Last();
         }
 
         public async Task Delete()

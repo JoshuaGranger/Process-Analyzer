@@ -130,7 +130,6 @@ namespace Collect.Pages
             IsCollecting = false;
             Data = new List<Data>();
             Tags = new BindableCollection<Tag>();
-            Tags.Add(new Tag(new OpcDaItemDefinition(), "", Color.Black));
             Tags.CollectionChanged += Tags_CollectionChanged;
 
             // Testing code
