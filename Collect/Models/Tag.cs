@@ -12,7 +12,7 @@ namespace Collect.Models
         public string TagId
         {
             get { return tagId; }
-            set { SetAndNotify(ref tagId, value); }
+            set { SetAndNotify(ref tagId, value); Definition.ItemId = (TagId != null ? TagId : ""); }
         }
         private string _tagShortDesc;
         public string TagShortDesc
@@ -39,12 +39,6 @@ namespace Collect.Models
             get { return _definition; }
             set { this.SetAndNotify(ref this._definition, value); }
         }
-        private List<double[]> _data;
-        public List<double[]> Data
-        {
-            get { return _data; }
-            set { SetAndNotify(ref _data, value); }
-        }
         private double _plotYMax;
         public double PlotYMax
         {
@@ -69,7 +63,6 @@ namespace Collect.Models
             get { return _showTrace; }
             set { SetAndNotify(ref _showTrace, value); }
         }
-        public int UniqueID;
         #endregion
 
         #region Constructor
@@ -78,9 +71,7 @@ namespace Collect.Models
         {
             BrushColor = System.Windows.Media.Color.FromArgb(color.A, color.R, color.G, color.B);
             Definition = new OpcDaItemDefinition();
-            Definition.ItemId = tagName;
             Definition.IsActive = true;
-            Data = new List<double[]>();
             PlotYMax = scaleYMax;
             PlotYMin = scaleYMin;
             ScaleOverride = false;
@@ -93,18 +84,17 @@ namespace Collect.Models
         // GUI Constructor
         public Tag(OpcDaItemDefinition definition, string tagShortDesc, System.Drawing.Color color)
         {
-            // Base
-            TagId = definition.ItemId;
-            TagShortDesc = TagId;
-            TraceColor = System.Drawing.Color.Black;
             // Others
             Definition = definition;
             Definition.IsActive = true;
-            Data = new List<double[]>();
             PlotYMax = 0;
             PlotYMin = 0;
             ScaleOverride = false;
             ShowTrace = true;
+            // Base
+            TagId = definition.ItemId;
+            TagShortDesc = TagId;
+            TraceColor = color;
         }
         #endregion
 

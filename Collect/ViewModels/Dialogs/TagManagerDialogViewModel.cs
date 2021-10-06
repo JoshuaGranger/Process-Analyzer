@@ -4,6 +4,8 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
+using TitaniumAS.Opc.Client.Da;
 
 namespace Collect.Pages
 {
@@ -31,6 +33,7 @@ namespace Collect.Pages
                 CanMoveDown = (Tags.IndexOf(SelectedTag) < (Tags.Count - 1));
             }
         }
+        public int[] CustomColors;
         // Guard Properties
         private bool _canEdit;
         public bool CanEdit
@@ -65,7 +68,7 @@ namespace Collect.Pages
         #endregion
 
         #region Actions
-        public void MoveUp()
+        public async Task MoveUp()
         {
             var index = Tags.IndexOf(SelectedTag);
             var tag = SelectedTag;
@@ -74,7 +77,7 @@ namespace Collect.Pages
             SelectedTag = Tags[index - 1];
         }
 
-        public void MoveDown()
+        public async Task MoveDown()
         {
             var index = Tags.IndexOf(SelectedTag);
             var tag = SelectedTag;
@@ -83,33 +86,46 @@ namespace Collect.Pages
             SelectedTag = Tags[index + 1];
         }
 
-        public void Add()
+        public async Task Add()
+        {
+            //Tags.Add(new Tag(new OpcDaItemDefinition(), "", System.Drawing.Color.Black));
+            //SelectedTag = Tags.Last();
+        }
+
+        public async Task Delete()
+        {
+            Tags.Remove(SelectedTag);
+        }
+
+        public async Task Import()
         {
 
         }
 
-        public void Delete()
+        public async Task Export()
         {
 
         }
 
-        public void Import()
+        public async Task ColorChange()
         {
+            // TODO: make the color changing mechanism more WPF/MVVM-like
+            var tag = SelectedTag;
 
-        }
+            var colorDialog = new System.Windows.Forms.ColorDialog();
+            colorDialog.SolidColorOnly = true;
+            colorDialog.FullOpen = true;
 
-        public void Export()
-        {
+            if (CustomColors != null)
+                colorDialog.CustomColors = CustomColors;
 
-        }
-        #endregion
+            var dialogResult = colorDialog.ShowDialog();
+            if (dialogResult == System.Windows.Forms.DialogResult.OK)
+            {
+                tag.TraceColor = colorDialog.Color;
+            }
 
-        #region Other Methods
-        private int NextAvailableID()
-        {
-            for (int i = 0; ; i++)
-                if (Tags.Where(t => t.UniqueID == i).FirstOrDefault() == null)
-                    return i;
+            CustomColors = colorDialog.CustomColors;
         }
         #endregion
 
@@ -120,7 +136,7 @@ namespace Collect.Pages
 
         public void Close()
         {
-            this.RequestClose(null);
+            this.RequestClose(true);
         }
     }
 }

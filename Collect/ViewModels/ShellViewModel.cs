@@ -3,6 +3,7 @@ using ScottPlot;
 using ScottPlot.Plottable;
 using Stylet;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
@@ -46,7 +47,7 @@ namespace Collect.Pages
         public bool AllowConnect
         {
             get { return _allowConnect; }
-            set { SetAndNotify(ref _allowConnect, value); }
+            set { SetAndNotify(ref _allowConnect, value); AllowDisconnect = !AllowConnect; }
         }
         private bool _allowDisconnect;
         public bool AllowDisconnect
@@ -54,6 +55,7 @@ namespace Collect.Pages
             get { return _allowDisconnect; }
             set { SetAndNotify(ref _allowDisconnect, value); }
         }
+        private List<Data> Data;
         private int _groupUpdateRate;
         public int GroupUpdateRate
         {
@@ -73,12 +75,12 @@ namespace Collect.Pages
             set { SetAndNotify(ref _serverStatus, value); }
         }
         // Tags and Data
-        private int[] _customColors;
+        public int[] CustomColors;
         private bool _isCollecting;
         public bool IsCollecting
         {
             get { return _isCollecting; }
-            set { SetAndNotify(ref _isCollecting, value); }
+            set { SetAndNotify(ref _isCollecting, value); IsNotCollecting = !IsCollecting; }
         }
         private bool _isNotCollecting;
         public bool IsNotCollecting
@@ -118,22 +120,21 @@ namespace Collect.Pages
             // Plot
             AutoScale = true;
             WpfPlot = new WpfPlot();
-            XLocked = false;
-            YLocked = false;
+            XLocked = true;
+            YLocked = true;
             // OPC
             AllowConnect = true;
-            AllowDisconnect = !AllowConnect;
             GroupUpdateRate = 500;
             Server = null;
             // Tags and Data
             IsCollecting = false;
-            IsNotCollecting = !IsCollecting;
+            Data = new List<Data>();
             Tags = new BindableCollection<Tag>();
+            Tags.Add(new Tag(new OpcDaItemDefinition(), "", Color.Black));
             Tags.CollectionChanged += Tags_CollectionChanged;
 
             // Testing code
-            GenerateSampleTags();
-            PlotAllTags(100);
+            PlotAllTags(120);
             WpfPlot.Refresh();
         }
         #endregion
@@ -143,25 +144,21 @@ namespace Collect.Pages
         public async Task Connect()
         {
             AllowConnect = false;
-            AllowDisconnect = !AllowConnect;
         }
 
         public async Task DataCollectionEnable()
         {
             IsCollecting = true;
-            IsNotCollecting = !IsCollecting;
         }
 
         public async Task DataCollectionDisable()
         {
             IsCollecting = false;
-            IsNotCollecting = !IsCollecting;
         }
 
         public async Task Disconnect()
         {
             AllowConnect = true;
-            AllowDisconnect = !AllowConnect;
         }
 
         // Tags
@@ -174,8 +171,8 @@ namespace Collect.Pages
             colorDialog.SolidColorOnly = true;
             colorDialog.FullOpen = true;
 
-            if (_customColors != null)
-                colorDialog.CustomColors = _customColors;
+            if (CustomColors != null)
+                colorDialog.CustomColors = CustomColors;
 
             var dialogResult = colorDialog.ShowDialog();
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
@@ -183,7 +180,7 @@ namespace Collect.Pages
                 tag.TraceColor = colorDialog.Color;
             }
 
-            _customColors = colorDialog.CustomColors;
+            CustomColors = colorDialog.CustomColors;
         }
 
         public async Task ImportTags()
@@ -268,6 +265,7 @@ namespace Collect.Pages
         {
             var dialogVm = this.dialogFactory.CreateTagManagerDialog();
             dialogVm.Tags = Tags;
+            dialogVm.CustomColors = CustomColors;
             var result = this.windowManager.ShowDialog(dialogVm);
             //if (result.GetValueOrDefault())
             //    Server = dialogVm.Server;
@@ -293,81 +291,37 @@ namespace Collect.Pages
         }
 
         // Plot
-        public void GenerateSampleTags()
-        {
-            Tags.Add(new Tag("test1", Color.Green, 0, 0));
-            Tags[0].Data.Add(new double[] { 0, 0 });
-            Tags[0].Data.Add(new double[] { 1, 10 });
-            Tags[0].Data.Add(new double[] { 2, 2 });
-            Tags[0].Data.Add(new double[] { 3, 3 });
-            Tags[0].Data.Add(new double[] { 4, 3 });
-            Tags[0].Data.Add(new double[] { 7, 7 });
-
-            Tags.Add(new Tag("test2", Color.Red, 0, 0));
-            Tags[1].Data.Add(new double[] { 0, 9 });
-            Tags[1].Data.Add(new double[] { 1, 8 });
-            Tags[1].Data.Add(new double[] { 2, 9 });
-            Tags[1].Data.Add(new double[] { 3, 2 });
-            Tags[1].Data.Add(new double[] { 4, 2 });
-            Tags[1].Data.Add(new double[] { 7, 7 });
-
-            Tags.Add(new Tag("test3", Color.Black, 0, 0));
-            Tags[2].Data.Add(new double[] { 0, 3 });
-            Tags[2].Data.Add(new double[] { 1, 3 });
-            Tags[2].Data.Add(new double[] { 2, 4 });
-            Tags[2].Data.Add(new double[] { 3, 5 });
-            Tags[2].Data.Add(new double[] { 4, 4 });
-            Tags[2].Data.Add(new double[] { 7, 1 });
-
-            Tags.Add(new Tag("test4", Color.Orange, 0, 0));
-            Tags[3].Data.Add(new double[] { 0, 0 });
-            Tags[3].Data.Add(new double[] { 1, 43 });
-            Tags[3].Data.Add(new double[] { 2, 22 });
-            Tags[3].Data.Add(new double[] { 3, 34 });
-            Tags[3].Data.Add(new double[] { 4, 31 });
-            Tags[3].Data.Add(new double[] { 7, 7 });
-
-            Tags.Add(new Tag("test5", Color.Yellow, 0, 0));
-            Tags[4].Data.Add(new double[] { 0, 6 });
-            Tags[4].Data.Add(new double[] { 1, 6 });
-            Tags[4].Data.Add(new double[] { 2, 6 });
-            Tags[4].Data.Add(new double[] { 3, 6 });
-            Tags[4].Data.Add(new double[] { 4, 6 });
-            Tags[4].Data.Add(new double[] { 7, 6 });
-
-            Tags.Add(new Tag("test6", Color.BlueViolet, 0, 0));
-            Tags[5].Data.Add(new double[] { 0, 3 });
-            Tags[5].Data.Add(new double[] { 1, 3 });
-            Tags[5].Data.Add(new double[] { 2, 3 });
-            Tags[5].Data.Add(new double[] { 3, 3 });
-            Tags[5].Data.Add(new double[] { 4, 3 });
-            Tags[5].Data.Add(new double[] { 7, 3 });
-
-            Tags[0].UniqueID = 0;
-            Tags[1].UniqueID = 1;
-            Tags[2].UniqueID = 2;
-            Tags[3].UniqueID = 3;
-            Tags[4].UniqueID = 4;
-            Tags[5].UniqueID = 5;
-        }
-
         public void PlotAllTags(int timeSpanSeconds)
         {
             // Clear the plot
             WpfPlot.Plot.Clear();
 
-            // Add each tag's plottable back
-            if (Tags != null)
-            { 
-                foreach (Tag tag in Tags)
+            // Figure out the plot times
+            var startTime = DateTime.Now.AddSeconds((-1) * timeSpanSeconds).ToOADate();
+            var endTime = DateTime.Now.ToOADate();
+
+            // Select tags that are requested to be shown
+            var activeTags = Tags.Where(x => x.ShowTrace == true).ToList();
+
+            foreach (Tag tag in activeTags)
+            {
+                // Check to see if there is any data for this tag
+                Data dataSet = Data.Where(x => x.TagId == tag.TagId).ToList().FirstOrDefault();
+
+                // Data exists
+                if (dataSet != default(IEnumerable<Data>))
                 {
                     var splt = new SignalPlotXY();
-                    splt.Xs = tag.Data.Select(x => x[0]).ToArray();
-                    splt.Ys = tag.Data.Select(x => x[1]).ToArray();
+
+                    // Filter data points to only those in the shown timespan
+                    var filteredData = dataSet.Points.Where(x => x[0] > startTime).ToList();
+
+                    splt.Xs = filteredData.Select(x => x[0]).ToArray();
+                    splt.Ys = filteredData.Select(x => x[1]).ToArray();
                     splt.Color = tag.TraceColor;
                     splt.MarkerSize = 0;
-                    splt.MaxRenderIndex = splt.Xs.Length - 1;
-                    splt.MinRenderIndex = 0;
+                    splt.MaxRenderIndex = (int)endTime;
+                    splt.MinRenderIndex = (int)startTime;
                     WpfPlot.Plot.Add(splt);
                 }
             }
