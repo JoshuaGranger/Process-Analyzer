@@ -32,15 +32,17 @@ namespace Collect.Pages
                 CanMoveUp = (Tags.IndexOf(SelectedTag) > 0);
                 CanMoveDown = (Tags.IndexOf(SelectedTag) < (Tags.Count - 1));
                 IsSelected = (SelectedTag != null);
+                CanExport = Tags.Count > 0;
             }
         }
+        // View Properties
+        public int[] CustomColors;
         private bool _isSelected;
         public bool IsSelected
         {
             get { return _isSelected; }
             set { SetAndNotify(ref _isSelected, value); }
         }	
-        public int[] CustomColors;
         // Guard Properties
         private bool _canEdit;
         public bool CanEdit
@@ -72,6 +74,18 @@ namespace Collect.Pages
             get { return _canMoveDown; }
             set { SetAndNotify(ref _canMoveDown, value); }
         }
+        private bool _canImport;
+        public bool CanImport
+        {
+            get { return false; }
+            set { SetAndNotify(ref _canImport, value); }
+        }
+        private bool _canExport;
+        public bool CanExport
+        {
+            get { return false; }
+            set { SetAndNotify(ref _canExport, value); }
+        }
         #endregion
 
         #region Actions
@@ -102,6 +116,7 @@ namespace Collect.Pages
         public async Task Delete()
         {
             Tags.Remove(SelectedTag);
+            SelectedTag = (Tags.Count > 0) ? Tags[Tags.Count - 1] : null;
         }
 
         public async Task Import()

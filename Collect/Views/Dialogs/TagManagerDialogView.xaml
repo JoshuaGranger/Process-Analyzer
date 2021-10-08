@@ -2,7 +2,66 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:s="https://github.com/canton7/Stylet"
-        Title="Tag Manager" Height="350" Width="600" ResizeMode="NoResize" ShowInTaskbar="False">
+        Title="Tag Manager" Height="300" Width="500" ResizeMode="NoResize" ShowInTaskbar="False">
+
+    <Window.Resources>
+        <s:BoolToVisibilityConverter x:Key="boolToInvisConverter" TrueVisibility="Hidden" FalseVisibility="Visible"/>
+        <Style x:Key="FocusVisual">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle Margin="2" SnapsToDevicePixels="true" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <SolidColorBrush x:Key="Button.Static.Background" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="Button.Static.Border" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="Button.MouseOver.Background" Color="#FFBEE6FD"/>
+        <SolidColorBrush x:Key="Button.MouseOver.Border" Color="#FF3C7FB1"/>
+        <SolidColorBrush x:Key="Button.Pressed.Background" Color="#FFC4E5F6"/>
+        <SolidColorBrush x:Key="Button.Pressed.Border" Color="#FF2C628B"/>
+        <SolidColorBrush x:Key="Button.Disabled.Background" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="Button.Disabled.Border" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="Button.Disabled.Foreground" Color="#FF838383"/>
+        <Style x:Key="CustomButton" TargetType="{x:Type Button}">
+            <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
+            <Setter Property="Background" Value="{StaticResource Button.Static.Background}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Button.Static.Border}"/>
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="true">
+                            <ContentPresenter x:Name="contentPresenter" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsDefaulted" Value="true">
+                                <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.MouseOver.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.MouseOver.Border}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="true">
+                                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.Pressed.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.Pressed.Border}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.Disabled.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.Disabled.Border}"/>
+                                <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{StaticResource Button.Disabled.Foreground}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
 
     <DockPanel>
         <GroupBox DockPanel.Dock="Left" Width="250" Margin="5,5,1,5">
@@ -15,51 +74,109 @@
                     <ColumnDefinition Width="30"/>
                 </Grid.ColumnDefinitions>
                 <ListBox Grid.Column="0" Margin="2,5,2.5,2" ItemsSource="{Binding Tags}" SelectedItem="{Binding SelectedTag}" DisplayMemberPath="TagId"/>
-                <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                    <Button Height="30" BorderBrush="#FFFFFF" Background="#FFFFFF" 
-                            Margin="0,2,0,2" ToolTip="Move Up" Command="{s:Action MoveUp}">
-                        <DockPanel>
-                            <Image Source="/Icons/TagManager/up.ico"/>
-                        </DockPanel>
-                    </Button>
-                    <Button Height="30" BorderBrush="#FFFFFF" Background="#FFFFFF" 
-                            Margin="0,2,0,20" ToolTip="Move Down" Command="{s:Action MoveDown}">
-                        <DockPanel>
-                            <Image Source="/Icons/TagManager/down.ico"/>
-                        </DockPanel>
-                    </Button>
-                    <Button Height="30" BorderBrush="#FFFFFF" Background="#FFFFFF" 
-                            Margin="0,20,0,2" ToolTip="Add" Command="{s:Action Add}">
-                        <DockPanel>
-                            <Image Source="/Icons/TagManager/add.ico"/>
-                        </DockPanel>
-                    </Button>
-                    <!--Button Height="30" BorderBrush="#FFFFFF" Background="#FFFFFF" 
-                            Margin="0,2,0,2" ToolTip="Duplicate" Command="{s:Action Duplicate}">
+                <DockPanel Grid.Column="1">
+                    <StackPanel VerticalAlignment="Center" DockPanel.Dock="Top">
+                        <Button Height="30" Margin="0,5,0,2" ToolTip="Move Up" Command="{s:Action MoveUp}" Style="{DynamicResource CustomButton}">
+                            <DockPanel>
+                                <Image Source="/Icons/TagManager/up.ico">
+                                    <Image.Style>
+                                        <Style TargetType="Image">
+                                            <Style.Triggers>
+                                                <Trigger Property="IsEnabled" Value="False">
+                                                    <Setter Property="Opacity" Value="0.2" />
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
+                            </DockPanel>
+                        </Button>
+                        <Button Height="30" Margin="0,2,0,6" ToolTip="Move Down" Command="{s:Action MoveDown}" Style="{DynamicResource CustomButton}">
+                            <DockPanel>
+                                <Image Source="/Icons/TagManager/down.ico">
+                                    <Image.Style>
+                                        <Style TargetType="Image">
+                                            <Style.Triggers>
+                                                <Trigger Property="IsEnabled" Value="False">
+                                                    <Setter Property="Opacity" Value="0.2" />
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
+                            </DockPanel>
+                        </Button>
+                    </StackPanel>
+                    <StackPanel VerticalAlignment="Center" DockPanel.Dock="Bottom">
+                        <Button Height="30" Margin="0,6,0,2" ToolTip="Import" Command="{s:Action Import}" Style="{DynamicResource CustomButton}">
+                            <DockPanel>
+                                <Image Source="/Icons/TagManager/import.ico">
+                                    <Image.Style>
+                                        <Style TargetType="Image">
+                                            <Style.Triggers>
+                                                <Trigger Property="IsEnabled" Value="False">
+                                                    <Setter Property="Opacity" Value="0.2" />
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
+                            </DockPanel>
+                        </Button>
+                        <Button Height="30" Margin="0,2,0,2" ToolTip="Export" Command="{s:Action Export}" Style="{DynamicResource CustomButton}">
+                            <DockPanel>
+                                <Image Source="/Icons/TagManager/export.ico">
+                                    <Image.Style>
+                                        <Style TargetType="Image">
+                                            <Style.Triggers>
+                                                <Trigger Property="IsEnabled" Value="False">
+                                                    <Setter Property="Opacity" Value="0.2" />
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
+                            </DockPanel>
+                        </Button>
+                    </StackPanel>
+                    <StackPanel VerticalAlignment="Center">
+                        <Button Height="30" Margin="0,6,0,2" ToolTip="Add" Command="{s:Action Add}" Style="{DynamicResource CustomButton}">
+                            <DockPanel>
+                                <Image Source="/Icons/TagManager/add.ico">
+                                    <Image.Style>
+                                        <Style TargetType="Image">
+                                            <Style.Triggers>
+                                                <Trigger Property="IsEnabled" Value="False">
+                                                    <Setter Property="Opacity" Value="0.2" />
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
+                            </DockPanel>
+                        </Button>
+                        <!--Button Height="30" Margin="0,2,0,2" ToolTip="Duplicate" Command="{s:Action Duplicate}" Style="{DynamicResource CustomButton}">
                         <DockPanel>
                             <Image Source="/Icons/TagManager/copy.ico"/>
                         </DockPanel>
                     </Button-->
-                    <Button Height="30" BorderBrush="#FFFFFF" Background="#FFFFFF" 
-                            Margin="0,2,0,20" ToolTip="Delete" Command="{s:Action Delete}">
-                        <DockPanel>
-                            <Image Source="/Icons/TagManager/delete.ico"/>
-                        </DockPanel>
-                    </Button>
-
-                    <Button Height="30" BorderBrush="#FFFFFF" Background="#FFFFFF" 
-                            Margin="0,20,0,2" ToolTip="Import" Command="{s:Action Import}">
-                        <DockPanel>
-                            <Image Source="/Icons/TagManager/import.ico"/>
-                        </DockPanel>
-                    </Button>
-                    <Button Height="30" BorderBrush="#FFFFFF" Background="#FFFFFF" 
-                            Margin="0,2,0,2" ToolTip="Export" Command="{s:Action Export}">
-                        <DockPanel>
-                            <Image Source="/Icons/TagManager/export.ico"/>
-                        </DockPanel>
-                    </Button>
-                </StackPanel>
+                        <Button Height="30" Margin="0,2,0,6" ToolTip="Delete" Command="{s:Action Delete}" Style="{DynamicResource CustomButton}">
+                            <DockPanel>
+                                <Image Source="/Icons/TagManager/delete.ico">
+                                    <Image.Style>
+                                        <Style TargetType="Image">
+                                            <Style.Triggers>
+                                                <Trigger Property="IsEnabled" Value="False">
+                                                    <Setter Property="Opacity" Value="0.2" />
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
+                            </DockPanel>
+                        </Button>
+                    </StackPanel>
+                </DockPanel>
             </Grid>
         </GroupBox>
         <Grid Margin="1,5,5,5">
@@ -75,22 +192,24 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
                         <RowDefinition Height="*" />
-                        <RowDefinition Height="2*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="40" />
                     </Grid.RowDefinitions>
-                    <StackPanel Grid.Row="0" Orientation="Horizontal">
-                        <Label HorizontalAlignment="Left" Content="OPC Tag Path" Width="110"/>
-                        <TextBox HorizontalAlignment="Left" Width="185"
+                    <StackPanel Grid.Row="0" Orientation="Vertical">
+                        <Label HorizontalAlignment="Left" Content="OPC Tag Path" Width="110" VerticalAlignment="Center"/>
+                        <TextBox HorizontalAlignment="Center" VerticalAlignment="Center" Width="180"
                                  Text="{Binding SelectedTag.TagId, UpdateSourceTrigger=PropertyChanged}"
                                  IsEnabled="{Binding IsSelected}"/>
                     </StackPanel>
-                    <StackPanel Grid.Row="1" Orientation="Horizontal">
-                        <Label HorizontalAlignment="Left" Content="Description" Width="110"/>
-                        <TextBox HorizontalAlignment="Left" Width="185" Text="{Binding SelectedTag.TagDesc, UpdateSourceTrigger=PropertyChanged}"
+                    <StackPanel Grid.Row="1" Orientation="Vertical">
+                        <Label HorizontalAlignment="Left" Content="Description" Width="110" VerticalAlignment="Center"/>
+                        <TextBox HorizontalAlignment="Center" VerticalAlignment="Center" Width="180"
+                                 Text="{Binding SelectedTag.TagDesc, UpdateSourceTrigger=PropertyChanged}"
                                  IsEnabled="{Binding IsSelected}"/>
                     </StackPanel>
-                    <StackPanel Grid.Row="2" Orientation="Horizontal">
-                        <Label HorizontalAlignment="Left" Content="Trace Color" Width="110"/>
-                        <Rectangle Width="40" Height="40" IsEnabled="{Binding IsSelected}">
+                    <StackPanel Grid.Row="2" Orientation="Vertical">
+                        <Label HorizontalAlignment="Left" Content="Trace Color" Width="110" VerticalAlignment="Center"/>
+                        <Rectangle Width="30" Height="30" VerticalAlignment="Center" IsEnabled="{Binding IsSelected}">
                             <Rectangle.Fill>
                                 <SolidColorBrush Color="{Binding SelectedTag.BrushColor, UpdateSourceTrigger=PropertyChanged}"/>
                             </Rectangle.Fill>
@@ -99,6 +218,11 @@
                             </Rectangle.InputBindings>
                         </Rectangle>
                     </StackPanel>
+                    <TextBlock Grid.Row="3" Visibility="{Binding IsSelected, Converter={StaticResource boolToInvisConverter}}"
+                               TextWrapping="Wrap" HorizontalAlignment="Center" FontStyle="Italic"
+                               FontWeight="Bold" Foreground="RoyalBlue" Width="180" TextAlignment="Center">
+                         Select a tag or create a<LineBreak/>new tag to begin editing
+                    </TextBlock>
                 </Grid>
             </GroupBox>
             <!--StackPanel Grid.Row="1" HorizontalAlignment="Right" Orientation="Horizontal" Margin="5,2.5,1.5,0">

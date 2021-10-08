@@ -266,10 +266,6 @@ namespace Collect.Pages
             dialogVm.Tags = Tags;
             dialogVm.CustomColors = CustomColors;
             var result = this.windowManager.ShowDialog(dialogVm);
-            //if (result.GetValueOrDefault())
-            //    Server = dialogVm.Server;
-            //else
-            //    Server = null;
         }
         #endregion
 
