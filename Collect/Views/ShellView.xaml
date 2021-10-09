@@ -1,34 +1,39 @@
-﻿<Window x:Class="Collect.Pages.ShellView"
+﻿<Window x:Class="Collect.Views.ShellView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:s="https://github.com/canton7/Stylet"
+        xmlns:local="clr-namespace:Collect.Services"
         Title="Collect" Height="800" Width="1200" MinWidth="940" MinHeight="540">
+
+    <Window.Resources>
+        <local:NotConverter x:Key="NotConverter"/>
+    </Window.Resources>
     
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_Server">
-                <MenuItem Header="_Connect" Command="{s:Action ShowServerDialog}" IsEnabled="{Binding AllowConnect}"/>
-                <MenuItem Header="_Disconnect" Command="{s:Action Disconnect}" IsEnabled="{Binding AllowDisconnect}"/>
+                <MenuItem Header="_Connect" Command="{s:Action ShowServerDialog}" IsEnabled="{Binding IsConnected, Converter={StaticResource NotConverter}}"/>
+                <MenuItem Header="_Disconnect" Command="{s:Action Disconnect}" IsEnabled="{Binding IsConnected}"/>
             </MenuItem>
             <MenuItem Header="_Tags">
                 <MenuItem Header="Open _Tag Manager" Command="{s:Action ShowTagManagerDialog}"/>
             </MenuItem>
             <MenuItem Header="_Plot">
-                <MenuItem Header="Lock _X Axis" Command="{s:Action LockXAxis}" IsChecked="{Binding XLocked}"/>
-                <MenuItem Header="Lock _Y Axis" Command="{s:Action LockYAxis}" IsChecked="{Binding YLocked}"/>
+                <MenuItem Header="Lock _X Axis" Command="{s:Action LockXAxis}"
+                          IsChecked="{Binding XLocked}" IsEnabled="{Binding AutoScroll, Converter={StaticResource NotConverter}}"/>
+                <MenuItem Header="Lock _Y Axis" Command="{s:Action LockYAxis}"
+                          IsChecked="{Binding YLocked}" IsEnabled="{Binding IsCollecting}"/>
                 <Separator/>
-                <MenuItem Header="Scale traces current _window" Command="{s:Action ScaleToWindow}"/>
+                <!--MenuItem Header="Scale traces current _window" Command="{s:Action ScaleToWindow}"/>
                 <MenuItem Header="Scale traces _all time" Command="{s:Action ScaleAllTime}"/>
-                <MenuItem Header="_Enable autoscale Y Axis" IsChecked="{Binding AutoScale}" Command="{s:Action SetAutoScale}"/>
-                <MenuItem Header="Enable auto_scroll" IsChecked="{Binding AutoScale}" Command="{s:Action SetAutoScale}"/>
-                <Separator/>
-                <MenuItem Header="_Save to Bitmap" />
+                <MenuItem Header="_Enable autoscale Y Axis" IsChecked="{Binding AutoScale}" Command="{s:Action SetAutoScale}"/-->
+                <MenuItem Header="Enable auto_scroll" IsChecked="{Binding AutoScroll}" Command="{s:Action SetAutoScroll}"/>
             </MenuItem>
             <MenuItem Header="_Data">
-                <MenuItem Header="_Enable data collection" Command="{s:Action DataCollectionEnable}" IsEnabled="{Binding IsNotCollecting}"/>
+                <MenuItem Header="_Enable data collection" Command="{s:Action DataCollectionEnable}" IsEnabled="{Binding IsCollecting, Converter={StaticResource NotConverter}}"/>
                 <MenuItem Header="_Disable data collection" Command="{s:Action DataCollectionDisable}" IsEnabled="{Binding IsCollecting}"/>
                 <Separator/>
-                <MenuItem Header="_Change update rate" Command="{s:Action ShowRateDialog}" IsEnabled="{Binding IsNotCollecting}"/>
+                <MenuItem Header="_Change update rate" Command="{s:Action ShowRateDialog}" IsEnabled="{Binding IsCollecting, Converter={StaticResource NotConverter}}"/>
                 <Separator/>
                 <MenuItem Header="_Save data to file" Command="{s:Action ShowDatalogDialog}" IsEnabled="False"/>
             </MenuItem>

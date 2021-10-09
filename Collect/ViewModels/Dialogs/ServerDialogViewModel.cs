@@ -4,7 +4,7 @@ using System.Windows;
 using TitaniumAS.Opc.Client.Common;
 using TitaniumAS.Opc.Client.Da;
 
-namespace Collect.Pages
+namespace Collect.Views.Dialogs
 {
     public class ServerDialogViewModel : Screen
     {
@@ -36,7 +36,8 @@ namespace Collect.Pages
         #region Actions
         public async System.Threading.Tasks.Task Connect()
         {
-            IPAddress = (IPAddress == "") ? "localhost" : IPAddress;
+            IPAddress = (IPAddress == "") ? "localhost" : IPAddress.TrimStart('\\');
+
             Uri url = UrlBuilder.Build(ProgID, IPAddress);
             try
             {

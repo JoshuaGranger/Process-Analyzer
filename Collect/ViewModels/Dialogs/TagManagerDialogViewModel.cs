@@ -7,11 +7,14 @@ using System.Reflection;
 using System.Threading.Tasks;
 using TitaniumAS.Opc.Client.Da;
 
-namespace Collect.Pages
+namespace Collect.Views
 {
     public class TagManagerDialogViewModel : Screen
     {
         #region Properties
+        // Stylet
+        private IDialogFactory dialogFactory;
+        private IWindowManager windowManager;
         // Tags
         private BindableCollection<Tag> _tags;
         public BindableCollection<Tag> Tags
@@ -88,6 +91,14 @@ namespace Collect.Pages
         }
         #endregion
 
+        public TagManagerDialogViewModel(IWindowManager windowManager, IDialogFactory dialogFactory)
+        {
+            // Property initialization
+            // Stylet
+            this.windowManager = windowManager;
+            this.dialogFactory = dialogFactory;
+        }
+
         #region Actions
         public async Task MoveUp()
         {
@@ -109,8 +120,12 @@ namespace Collect.Pages
 
         public async Task Add()
         {
-            Tags.Add(new Tag(new OpcDaItemDefinition(), "", System.Drawing.Color.Black));
-            SelectedTag = Tags.Last();
+            OpcDaItemDefinition def = new OpcDaItemDefinition();
+            def.IsActive = false;
+            var tag = new Tag(def, "", System.Drawing.Color.RoyalBlue);
+            SelectedTag = tag;
+
+            ShowTagDialog();
         }
 
         public async Task Delete()
@@ -128,28 +143,15 @@ namespace Collect.Pages
         {
 
         }
-
-        public async Task ColorChange()
-        {
-            // TODO: make the color changing mechanism more WPF/MVVM-like
-            var tag = SelectedTag;
-
-            var colorDialog = new System.Windows.Forms.ColorDialog();
-            colorDialog.SolidColorOnly = true;
-            colorDialog.FullOpen = true;
-
-            if (CustomColors != null)
-                colorDialog.CustomColors = CustomColors;
-
-            var dialogResult = colorDialog.ShowDialog();
-            if (dialogResult == System.Windows.Forms.DialogResult.OK)
-            {
-                tag.TraceColor = colorDialog.Color;
-            }
-
-            CustomColors = colorDialog.CustomColors;
-        }
         #endregion
+
+        public async Task ShowTagDialog()
+        {
+            var dialogVm = this.dialogFactory.CreateTagDialog();
+            dialogVm.SelectedTag = SelectedTag;
+            dialogVm.CustomColors = CustomColors;
+            var result = this.windowManager.ShowDialog(dialogVm);
+        }
 
         public void Save()
         {
@@ -159,6 +161,11 @@ namespace Collect.Pages
         public void Close()
         {
             this.RequestClose(true);
+        }
+
+        public interface IDialogFactory
+        {
+            TagDialogViewModel CreateTagDialog();
         }
     }
 }

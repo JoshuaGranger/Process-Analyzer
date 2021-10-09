@@ -163,12 +163,14 @@
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Models\Data.cs" />
     <Compile Include="Services\FileService.cs" />
+    <Compile Include="Services\NotConverter.cs" />
     <Compile Include="Services\TagService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\File.cs" />
     <Compile Include="Models\Tag.cs" />
     <Compile Include="Models\TagBase.cs" />
+    <Compile Include="ViewModels\Dialogs\TagDialogViewModel.cs" />
     <Compile Include="Views\Dialogs\AboutDialogView.xaml.cs">
       <DependentUpon>AboutDialogView.xaml</DependentUpon>
     </Compile>
@@ -185,6 +187,9 @@
       <DependentUpon>ServerDialogView.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\Dialogs\ServerDialogViewModel.cs" />
+    <Compile Include="Views\Dialogs\TagDialogView.xaml.cs">
+      <DependentUpon>TagDialogView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ShellView.xaml.cs">
       <DependentUpon>ShellView.xaml</DependentUpon>
     </Compile>
@@ -233,6 +238,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Dialogs\ServerDialogView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Dialogs\TagDialogView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Collect.Pages
+namespace Collect.Views.Dialogs
 {
     /// <summary>
     /// Interaction logic for DatalogDialogView.xaml

@@ -1,4 +1,5 @@
 ﻿using Collect.Models;
+using Collect.Views.Dialogs;
 using ScottPlot;
 using ScottPlot.Plottable;
 using Stylet;
@@ -9,7 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TitaniumAS.Opc.Client.Da;
 
-namespace Collect.Pages
+namespace Collect.Views
 {
     public class ShellViewModel : Screen
     {
@@ -18,11 +19,11 @@ namespace Collect.Pages
         private IDialogFactory dialogFactory;
         private IWindowManager windowManager;
         // Plot Properties
-        private bool _autoScale;
-        public bool AutoScale
+        private bool _autoScroll;
+        public bool AutoScroll
         {
-            get { return _autoScale; }
-            set { SetAndNotify(ref _autoScale, value); }
+            get { return _autoScroll; }
+            set { SetAndNotify(ref _autoScroll, value); XLocked = AutoScroll ? true : XLocked; }
         }
         private WpfPlot _wpfPlot;
         public WpfPlot WpfPlot
@@ -42,26 +43,26 @@ namespace Collect.Pages
             get { return _yLocked; }
             set { SetAndNotify(ref _yLocked, value); }
         }
+        private int plotTimeSpan;                   // Seconds
+        public int PlotTimeSpan
+        {
+            get { return plotTimeSpan; }
+            set { SetAndNotify(ref plotTimeSpan, value); }
+        }	
         // OPC Properties
-        private bool _allowConnect;
-        public bool AllowConnect
-        {
-            get { return _allowConnect; }
-            set { SetAndNotify(ref _allowConnect, value); AllowDisconnect = !AllowConnect; }
-        }
-        private bool _allowDisconnect;
-        public bool AllowDisconnect
-        {
-            get { return _allowDisconnect; }
-            set { SetAndNotify(ref _allowDisconnect, value); }
-        }
         private List<Data> Data;
+        private bool _isConnected;
+        public bool IsConnected
+        {
+            get { return _isConnected; }
+            set { SetAndNotify(ref _isConnected, value); }
+        }	
         private int _groupUpdateRate;
         public int GroupUpdateRate
         {
             get { return _groupUpdateRate; }
             set { SetAndNotify(ref _groupUpdateRate, value); }
-        }
+        }               // milliseconds
         private OpcDaServer _server;
         public OpcDaServer Server
         {
@@ -80,13 +81,7 @@ namespace Collect.Pages
         public bool IsCollecting
         {
             get { return _isCollecting; }
-            set { SetAndNotify(ref _isCollecting, value); IsNotCollecting = !IsCollecting; }
-        }
-        private bool _isNotCollecting;
-        public bool IsNotCollecting
-        {
-            get { return _isNotCollecting; }
-            set { SetAndNotify(ref _isNotCollecting, value); }
+            set { SetAndNotify(ref _isCollecting, value); }
         }
         private Tag _selectedTag;
         public Tag SelectedTag
@@ -118,12 +113,13 @@ namespace Collect.Pages
             this.windowManager = windowManager;
             this.dialogFactory = dialogFactory;
             // Plot
-            AutoScale = true;
+            AutoScroll = true;
             WpfPlot = new WpfPlot();
             XLocked = true;
             YLocked = true;
+            PlotTimeSpan = 120;
             // OPC
-            AllowConnect = true;
+            IsConnected = false;
             GroupUpdateRate = 500;
             Server = null;
             // Tags and Data
@@ -133,18 +129,13 @@ namespace Collect.Pages
             Tags.CollectionChanged += Tags_CollectionChanged;
 
             // Testing code
-            PlotAllTags(120);
+            PlotAllTags(PlotTimeSpan);
             WpfPlot.Refresh();
         }
         #endregion
 
         #region Actions
         // OPC
-        public async Task Connect()
-        {
-            AllowConnect = false;
-        }
-
         public async Task DataCollectionEnable()
         {
             IsCollecting = true;
@@ -157,7 +148,11 @@ namespace Collect.Pages
 
         public async Task Disconnect()
         {
-            AllowConnect = true;
+            if (Server != null)
+                Server.Disconnect();
+
+            Server = null;
+            IsConnected = false;
         }
 
         // Tags
@@ -223,9 +218,9 @@ namespace Collect.Pages
             WpfPlot.Refresh();
         }
 
-        public async Task SetAutoScale()
+        public async Task SetAutoScroll()
         {
-            AutoScale = !AutoScale;
+            AutoScroll = !AutoScroll;
         }
 
         // Dialog boxes
@@ -258,6 +253,8 @@ namespace Collect.Pages
                 Server = dialogVm.Server;
             else
                 Server = null;
+
+            IsConnected = (Server != null) && (Server.IsConnected) ? true : false;
         }
 
         public async Task ShowTagManagerDialog()
@@ -273,10 +270,10 @@ namespace Collect.Pages
         // OPC
         public void UpdateServerStatus()
         {
-            if (Server == null)
-                ServerStatus = "Disconnected";
-            else
+            if ((Server != null) && (Server.IsConnected == true))
                 ServerStatus = "Connected to " + Server.ServerDescription;
+            else
+                ServerStatus = "Disconnected";
         }
 
         // Tags

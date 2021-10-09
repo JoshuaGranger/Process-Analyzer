@@ -2,7 +2,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace Collect.Pages
+namespace Collect.Views.Dialogs
 {
     public class RateDialogViewModel : Screen
     {

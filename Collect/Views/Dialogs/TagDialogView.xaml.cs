@@ -17,9 +17,9 @@ namespace Collect.Views
     /// <summary>
     /// Interaction logic for TagDialogView.xaml
     /// </summary>
-    public partial class TagManagerDialogView : Window
+    public partial class TagDialogView : Window
     {
-        public TagManagerDialogView()
+        public TagDialogView()
         {
             InitializeComponent();
         }

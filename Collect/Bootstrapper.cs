@@ -1,7 +1,8 @@
 ﻿using System;
 using Stylet;
 using StyletIoC;
-using Collect.Pages;
+using Collect.Views;
+using Collect.Views.Dialogs;
 
 namespace Collect
 {

@@ -3,7 +3,7 @@ using System;
 using System.Diagnostics;
 using System.Reflection;
 
-namespace Collect.Pages
+namespace Collect.Views.Dialogs
 {
     public class AboutDialogViewModel : Screen
     {
