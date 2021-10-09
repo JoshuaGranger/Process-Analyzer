@@ -7,6 +7,7 @@
 
     <Window.Resources>
         <local:NotConverter x:Key="NotConverter"/>
+        <local:ColorToBrushConverter x:Key="ColorToBrushConverter"/>
     </Window.Resources>
     
     <DockPanel>
@@ -16,18 +17,18 @@
                 <MenuItem Header="_Disconnect" Command="{s:Action Disconnect}" IsEnabled="{Binding IsConnected}"/>
             </MenuItem>
             <MenuItem Header="_Tags">
-                <MenuItem Header="Open _Tag Manager" Command="{s:Action ShowTagManagerDialog}"/>
+                <MenuItem Header="Open _Tag Manager" Command="{s:Action ShowTagManagerDialog}" IsEnabled="{Binding IsCollecting, Converter={StaticResource NotConverter}}"/>
             </MenuItem>
             <MenuItem Header="_Plot">
-                <MenuItem Header="Lock _X Axis" Command="{s:Action LockXAxis}"
+                <!--MenuItem Header="Lock _X Axis" Command="{s:Action LockXAxis}"
                           IsChecked="{Binding XLocked}" IsEnabled="{Binding AutoScroll, Converter={StaticResource NotConverter}}"/>
                 <MenuItem Header="Lock _Y Axis" Command="{s:Action LockYAxis}"
                           IsChecked="{Binding YLocked}" IsEnabled="{Binding IsCollecting}"/>
-                <Separator/>
+                <Separator/-->
                 <!--MenuItem Header="Scale traces current _window" Command="{s:Action ScaleToWindow}"/>
                 <MenuItem Header="Scale traces _all time" Command="{s:Action ScaleAllTime}"/>
                 <MenuItem Header="_Enable autoscale Y Axis" IsChecked="{Binding AutoScale}" Command="{s:Action SetAutoScale}"/-->
-                <MenuItem Header="Enable auto_scroll" IsChecked="{Binding AutoScroll}" Command="{s:Action SetAutoScroll}"/>
+                <MenuItem Header="Enable _AutoScroll" IsChecked="{Binding AutoScroll}" Command="{s:Action SetAutoScroll}"/>
             </MenuItem>
             <MenuItem Header="_Data">
                 <MenuItem Header="_Enable data collection" Command="{s:Action DataCollectionEnable}" IsEnabled="{Binding IsCollecting, Converter={StaticResource NotConverter}}"/>
@@ -114,7 +115,7 @@
                                         <DataTemplate>
                                             <Rectangle Width="17" Height="17">
                                                 <Rectangle.Fill>
-                                                    <SolidColorBrush Color="{Binding BrushColor}"/>
+                                                    <SolidColorBrush Color="{Binding TraceColor, Converter={StaticResource ColorToBrushConverter}}"/>
                                                 </Rectangle.Fill>
                                                 <Rectangle.InputBindings>
                                                     <MouseBinding Command="{s:Action ColorChange}" MouseAction="LeftClick" />

@@ -1,13 +1,15 @@
 ﻿using Collect.Models;
-using Collect.Views.Dialogs;
+using Collect.Views;
 using ScottPlot;
 using ScottPlot.Plottable;
 using Stylet;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using TitaniumAS.Opc.Client.Da;
 
 namespace Collect.Views
@@ -23,7 +25,18 @@ namespace Collect.Views
         public bool AutoScroll
         {
             get { return _autoScroll; }
-            set { SetAndNotify(ref _autoScroll, value); XLocked = AutoScroll ? true : XLocked; }
+            set
+            {
+                SetAndNotify(ref _autoScroll, value);
+                if (WpfPlot != null)
+                {
+                    if (AutoScroll)
+                        WpfPlot.Plot.XAxis.LockLimits();
+                    else
+                        WpfPlot.Plot.XAxis.LockLimits(false);
+                }
+                //XLocked = AutoScroll ? true : XLocked;
+            }
         }
         private WpfPlot _wpfPlot;
         public WpfPlot WpfPlot
@@ -31,18 +44,18 @@ namespace Collect.Views
             get { return _wpfPlot; }
             set { SetAndNotify(ref _wpfPlot, value); }
         }
-        private bool _xLocked;
-        public bool XLocked
-        {
-            get { return _xLocked; }
-            set { SetAndNotify(ref _xLocked, value); }
-        }
-        private bool _yLocked;
-        public bool YLocked
-        {
-            get { return _yLocked; }
-            set { SetAndNotify(ref _yLocked, value); }
-        }
+        //private bool _xLocked;
+        //public bool XLocked
+        //{
+        //    get { return _xLocked; }
+        //    set { SetAndNotify(ref _xLocked, value); }
+        //}
+        //private bool _yLocked;
+        //public bool YLocked
+        //{
+        //    get { return _yLocked; }
+        //    set { SetAndNotify(ref _yLocked, value); }
+        //}
         private int plotTimeSpan;                   // Seconds
         public int PlotTimeSpan
         {
@@ -50,12 +63,34 @@ namespace Collect.Views
             set { SetAndNotify(ref plotTimeSpan, value); }
         }	
         // OPC Properties
+        private OpcDaServer _server;
+        public OpcDaServer Server
+        {
+            get { return _server; }
+            set
+            {
+                SetAndNotify(ref _server, value);
+
+                // Server status string
+                UpdateServerStatus();
+            }
+        }
+        private OpcDaGroup _group;
+        public OpcDaGroup Group
+        {
+            get { return _group; }
+            set { SetAndNotify(ref _group, value); }
+        }	
         private List<Data> Data;
         private bool _isConnected;
         public bool IsConnected
         {
             get { return _isConnected; }
-            set { SetAndNotify(ref _isConnected, value); }
+            set
+            {
+                SetAndNotify(ref _isConnected, value);
+                UpdateCanDataCollectionEnable();
+            }
         }	
         private int _groupUpdateRate;
         public int GroupUpdateRate
@@ -63,12 +98,6 @@ namespace Collect.Views
             get { return _groupUpdateRate; }
             set { SetAndNotify(ref _groupUpdateRate, value); }
         }               // milliseconds
-        private OpcDaServer _server;
-        public OpcDaServer Server
-        {
-            get { return _server; }
-            set { SetAndNotify(ref _server, value); UpdateServerStatus(); }
-        }
         private string _serverStatus;               // Set by Server
         public string ServerStatus
         {
@@ -95,14 +124,14 @@ namespace Collect.Views
             get { return _tags; }
             set { SetAndNotify(ref _tags, value); }
         }
-
-        // Commands Allowed
-        private bool _canExportTags;
-        public bool CanExportTags
+        // Guard Properties
+        private bool _canDataCollectionEnable;
+        public bool CanDataCollectionEnable
         {
-            get { return _canExportTags; }
-            set { SetAndNotify(ref _canExportTags, value); }
-        }
+            get { return _canDataCollectionEnable; }
+            set { SetAndNotify(ref _canDataCollectionEnable, value); }
+        }	
+
         #endregion
 
         #region Constructor
@@ -112,21 +141,22 @@ namespace Collect.Views
             // Stylet
             this.windowManager = windowManager;
             this.dialogFactory = dialogFactory;
-            // Plot
-            AutoScroll = true;
-            WpfPlot = new WpfPlot();
-            XLocked = true;
-            YLocked = true;
-            PlotTimeSpan = 120;
-            // OPC
-            IsConnected = false;
-            GroupUpdateRate = 500;
-            Server = null;
             // Tags and Data
             IsCollecting = false;
             Data = new List<Data>();
             Tags = new BindableCollection<Tag>();
             Tags.CollectionChanged += Tags_CollectionChanged;
+            // Plot
+            WpfPlot = new WpfPlot();
+            WpfPlot.Plot.YAxis.LockLimits();
+            AutoScroll = true;
+            //XLocked = true;
+            //YLocked = true;
+            PlotTimeSpan = 120;
+            // OPC
+            IsConnected = false;
+            GroupUpdateRate = 500;
+            Server = null;
 
             // Testing code
             PlotAllTags(PlotTimeSpan);
@@ -138,18 +168,38 @@ namespace Collect.Views
         // OPC
         public async Task DataCollectionEnable()
         {
+            var definitions = new List<OpcDaItemDefinition>();
+            foreach (Tag t in Tags)
+                definitions.Add(new OpcDaItemDefinition() { ItemId = t.TagId, IsActive = true });
+
             IsCollecting = true;
+            Group = Server.AddGroup("TagGroup");
+
+            foreach (OpcDaItemDefinition definition in definitions)
+            {
+                OpcDaItemResult[] result = Group.AddItems(new List<OpcDaItemDefinition>() { definition });
+                if (result[0].Error.Failed)
+                {
+                    MessageBox.Show(String.Format("Adding item failed:\n{0}\n\nError:\n{1}", definition.ItemId, result[0].Error.ToString()),
+                        "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            }
         }
 
         public async Task DataCollectionDisable()
         {
+            Server.RemoveGroup(Group);
             IsCollecting = false;
         }
 
         public async Task Disconnect()
         {
             if (Server != null)
+            {
                 Server.Disconnect();
+                if ((Group != null) && (Server.Groups.Count > 0))
+                    Server.RemoveGroup(Group);
+            }
 
             Server = null;
             IsConnected = false;
@@ -177,46 +227,16 @@ namespace Collect.Views
             CustomColors = colorDialog.CustomColors;
         }
 
-        public async Task ImportTags()
-        {
-
-        }
-
-        public async Task ExportTags()
-        {
-
-        }
-
         // Plot
-        public async Task LockXAxis()
-        {
-            WpfPlot.Plot.XAxis.LockLimits(XLocked = !XLocked);
-        }
+        //public async Task LockXAxis()
+        //{
+        //    WpfPlot.Plot.XAxis.LockLimits(XLocked = !XLocked);
+        //}
 
-        public async Task LockYAxis()
-        {
-            WpfPlot.Plot.YAxis.LockLimits(YLocked = !YLocked);
-        }
-
-        public async Task ScaleAllTime()
-        {
-            WpfPlot.Plot.AxisAutoY();
-            WpfPlot.Refresh();
-        }
-
-        public async Task ScaleToWindow()
-        {
-            double min = WpfPlot.Plot.XAxis.Dims.Min;
-            double max = WpfPlot.Plot.XAxis.Dims.Max;
-
-            foreach (ScottPlot.Plottable.SignalPlotXY p in WpfPlot.Plot.GetSettings().Plottables)
-            {
-                
-            }
-
-            WpfPlot.Plot.AxisAutoY();
-            WpfPlot.Refresh();
-        }
+        //public async Task LockYAxis()
+        //{
+        //    WpfPlot.Plot.YAxis.LockLimits(YLocked = !YLocked);
+        //}
 
         public async Task SetAutoScroll()
         {
@@ -260,6 +280,8 @@ namespace Collect.Views
         public async Task ShowTagManagerDialog()
         {
             var dialogVm = this.dialogFactory.CreateTagManagerDialog();
+            dialogVm.dialogFactory = this.dialogFactory;
+            dialogVm.windowManager = this.windowManager;
             dialogVm.Tags = Tags;
             dialogVm.CustomColors = CustomColors;
             var result = this.windowManager.ShowDialog(dialogVm);
@@ -276,10 +298,17 @@ namespace Collect.Views
                 ServerStatus = "Disconnected";
         }
 
-        // Tags
-        private void Tags_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        public void UpdateCanDataCollectionEnable()
         {
-            CanExportTags = Tags.Count > 0;
+            if ((Server != null) && !IsCollecting && Server.IsConnected && (Tags.Count > 0))
+                CanDataCollectionEnable = true;
+            else
+                CanDataCollectionEnable = false;
+        }
+
+        private void Tags_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            UpdateCanDataCollectionEnable();
         }
 
         // Plot
@@ -328,5 +357,6 @@ namespace Collect.Views
         RateDialogViewModel CreateRateDialog();
         ServerDialogViewModel CreateServerDialog();
         TagManagerDialogViewModel CreateTagManagerDialog();
+        TagEditorDialogViewModel CreateTagEditorDialog();
     }
 }

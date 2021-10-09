@@ -2,7 +2,6 @@
 using Stylet;
 using StyletIoC;
 using Collect.Views;
-using Collect.Views.Dialogs;
 
 namespace Collect
 {

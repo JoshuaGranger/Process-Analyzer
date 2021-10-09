@@ -12,7 +12,10 @@ namespace Collect.Models
         public string TagId
         {
             get { return tagId; }
-            set { SetAndNotify(ref tagId, value); Definition.ItemId = (TagId != null ? TagId : ""); }
+            set
+            {
+                SetAndNotify(ref tagId, value); 
+            }
         }
         private string _tagDesc;
         public string TagDesc
@@ -24,21 +27,9 @@ namespace Collect.Models
         public System.Drawing.Color TraceColor
         {
             get { return _traceColor; }
-            set { SetAndNotify(ref _traceColor, value); TraceToBrush(); }
+            set { SetAndNotify(ref _traceColor, value); }
         }	
         // Other
-        private System.Windows.Media.Color _brushColor;
-        public System.Windows.Media.Color BrushColor
-        {
-            get { return _brushColor; }
-            set { SetAndNotify(ref _brushColor, value); }
-        }
-        private OpcDaItemDefinition _definition;
-        public OpcDaItemDefinition Definition
-        {
-            get { return _definition; }
-            set { this.SetAndNotify(ref this._definition, value); }
-        }
         private double _plotYMax;
         public double PlotYMax
         {
@@ -66,41 +57,18 @@ namespace Collect.Models
         #endregion
 
         #region Constructor
-        // Constructor for application testing
-        public Tag(string tagName, System.Drawing.Color color, double scaleYMin, double scaleYMax)
-        {
-            BrushColor = System.Windows.Media.Color.FromArgb(color.A, color.R, color.G, color.B);
-            Definition = new OpcDaItemDefinition();
-            Definition.IsActive = true;
-            PlotYMax = scaleYMax;
-            PlotYMin = scaleYMin;
-            ScaleOverride = false;
-            ShowTrace = true;
-            TagId = tagName;
-            TagDesc = tagName;
-            TraceColor = color;
-        }
-
         // GUI Constructor
-        public Tag(OpcDaItemDefinition definition, string tagDesc, System.Drawing.Color color)
+        public Tag(string tagId, string tagDesc, System.Drawing.Color color)
         {
             // Others
-            Definition = definition;
-            Definition.IsActive = true;
+            TagId = tagId;
+            TagDesc = tagDesc;
+            TraceColor = color;
             PlotYMax = 0;
             PlotYMin = 0;
             ScaleOverride = false;
             ShowTrace = true;
-            // Base
-            TagId = definition.ItemId;
-            TagDesc = TagId;
-            TraceColor = color;
         }
         #endregion
-
-        private void TraceToBrush()
-        {
-            BrushColor = System.Windows.Media.Color.FromArgb(TraceColor.A, TraceColor.R, TraceColor.G, TraceColor.B);
-        }
     }
 }

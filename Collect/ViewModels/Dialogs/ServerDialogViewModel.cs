@@ -4,7 +4,7 @@ using System.Windows;
 using TitaniumAS.Opc.Client.Common;
 using TitaniumAS.Opc.Client.Da;
 
-namespace Collect.Views.Dialogs
+namespace Collect.Views
 {
     public class ServerDialogViewModel : Screen
     {

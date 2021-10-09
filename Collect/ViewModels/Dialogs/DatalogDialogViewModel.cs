@@ -1,7 +1,7 @@
 ﻿using Stylet;
 using System;
 
-namespace Collect.Views.Dialogs
+namespace Collect.Views
 {
     public class DatalogDialogViewModel : Screen
     {

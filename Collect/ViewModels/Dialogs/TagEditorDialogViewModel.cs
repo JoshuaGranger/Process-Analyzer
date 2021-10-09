@@ -9,7 +9,7 @@ using TitaniumAS.Opc.Client.Da;
 
 namespace Collect.Views
 {
-    public class TagDialogViewModel : Screen, ITagBase
+    public class TagEditorDialogViewModel : Screen, ITagBase
     {
         #region Properties
         // Tag Properties
@@ -17,13 +17,27 @@ namespace Collect.Views
         public Tag SelectedTag
         {
             get { return _selectedTag; }
-            set { SetAndNotify(ref _selectedTag, value); }
+            set
+            {
+                SetAndNotify(ref _selectedTag, value);
+                if (SelectedTag != null)
+                {
+                    TagId = SelectedTag.TagId;
+                    TagDesc = SelectedTag.TagDesc;
+                    TraceColor = SelectedTag.TraceColor;
+                }
+            }
         }
+        public string[] TakenTags;
         private string tagId;
         public string TagId
         {
             get { return tagId; }
-            set { SetAndNotify(ref tagId, value); }
+            set
+            {
+                SetAndNotify(ref tagId, value);
+                CanSave = (!TakenTags.Contains(TagId)) && (TagId != "");
+            }
         }
         private string _tagDesc;
         public string TagDesc
@@ -37,6 +51,13 @@ namespace Collect.Views
             get { return _traceColor; }
             set { SetAndNotify(ref _traceColor, value); }
         }
+        // Guard Properties
+        private bool _canSave;
+        public bool CanSave
+        {
+            get { return _canSave; }
+            set { SetAndNotify(ref _canSave, value); }
+        }	
         // View Properties
         public int[] CustomColors;
         #endregion
@@ -45,8 +66,6 @@ namespace Collect.Views
         public async Task ColorChange()
         {
             // TODO: make the color changing mechanism more WPF/MVVM-like
-            var tag = SelectedTag;
-
             var colorDialog = new System.Windows.Forms.ColorDialog();
             colorDialog.SolidColorOnly = true;
             colorDialog.FullOpen = true;
@@ -57,10 +76,8 @@ namespace Collect.Views
             var dialogResult = colorDialog.ShowDialog();
             if (dialogResult == System.Windows.Forms.DialogResult.OK)
             {
-                tag.TraceColor = colorDialog.Color;
+                TraceColor = colorDialog.Color;
             }
-
-            CustomColors = colorDialog.CustomColors;
         }
         #endregion
 
@@ -74,7 +91,7 @@ namespace Collect.Views
 
         public void Close()
         {
-            this.RequestClose(true);
+            this.RequestClose(null);
         }
     }
 }
