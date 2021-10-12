@@ -1,12 +1,14 @@
 ﻿using Collect.Models;
+using Collect.Services;
+using Microsoft.Win32;
 using Stylet;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using TitaniumAS.Opc.Client.Da;
+using System.Windows;
 
 namespace Collect.Views
 {
@@ -21,7 +23,12 @@ namespace Collect.Views
         public BindableCollection<Tag> Tags
         {
             get { return _tags; }
-            set { SetAndNotify(ref _tags, value); }
+            set
+            {
+                SetAndNotify(ref _tags, value);
+                if (Tags != null)
+                    Tags.CollectionChanged += Tags_CollectionChanged;
+            }
         }	
         private Tag _selectedTag;
         public Tag SelectedTag
@@ -79,44 +86,36 @@ namespace Collect.Views
             get { return _canMoveDown; }
             set { SetAndNotify(ref _canMoveDown, value); }
         }
-        private bool _canImport;
-        public bool CanImport
-        {
-            get { return false; }
-            set { SetAndNotify(ref _canImport, value); }
-        }
         private bool _canExport;
         public bool CanExport
         {
-            get { return false; }
+            get { return _canExport; }
             set { SetAndNotify(ref _canExport, value); }
         }
         #endregion
 
         #region Actions
-        public async Task MoveUp()
-        {
-            var index = Tags.IndexOf(SelectedTag);
-            var tag = SelectedTag;
-            Tags.RemoveAt(index);
-            Tags.Insert(index - 1, tag);
-            SelectedTag = Tags[index - 1];
-        }
-
-        public async Task MoveDown()
-        {
-            var index = Tags.IndexOf(SelectedTag);
-            var tag = SelectedTag;
-            Tags.RemoveAt(index);
-            Tags.Insert(index + 1, tag);
-            SelectedTag = Tags[index + 1];
-        }
-
         public async Task Add()
         {
             _lastSelected = SelectedTag;
             var takenTagList = Tags.Select(x => x.TagId).ToArray();
             var tag = new Tag("", "", System.Drawing.Color.RoyalBlue);
+            SelectedTag = tag;
+
+            ShowTagDialog(takenTagList);
+        }
+
+        public async Task Delete()
+        {
+            Tags.Remove(SelectedTag);
+            SelectedTag = (Tags.Count > 0) ? Tags[Tags.Count - 1] : null;
+        }
+
+        public async Task Duplicate()
+        {
+            _lastSelected = SelectedTag;
+            var takenTagList = Tags.Select(x => x.TagId).ToArray();
+            var tag = new Tag(SelectedTag.TagId, SelectedTag.TagDesc, SelectedTag.TraceColor);
             SelectedTag = tag;
 
             ShowTagDialog(takenTagList);
@@ -131,32 +130,75 @@ namespace Collect.Views
             ShowTagDialog(tagList.ToArray());
         }
 
-        public async Task Duplicate()
+        public async Task Export()
         {
-            _lastSelected = SelectedTag;
-            var takenTagList = Tags.Select(x => x.TagId).ToArray();
-            var tag = new Tag(SelectedTag.TagId, SelectedTag.TagDesc, SelectedTag.TraceColor);
-            SelectedTag = tag;
+            string codeBase = Assembly.GetExecutingAssembly().CodeBase;
+            UriBuilder uri = new UriBuilder(codeBase);
+            string uriPath = Uri.UnescapeDataString(uri.Path);
+            string startPath = Path.GetDirectoryName(uriPath);
+            //string startPath = System.Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            string defaultFileName = DateTime.Now.ToString("yyyyMMddTHHmmss") + "_Collect_TagExport.json";
 
-            ShowTagDialog(takenTagList);
-        }
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.InitialDirectory = startPath;
+            saveFileDialog.FileName = defaultFileName;
+            saveFileDialog.DefaultExt = "json";
+            saveFileDialog.AddExtension = true;
+            saveFileDialog.Filter = "JSON | *.json";
+            var result = saveFileDialog.ShowDialog();
 
-        public async Task Delete()
-        {
-            Tags.Remove(SelectedTag);
-            SelectedTag = (Tags.Count > 0) ? Tags[Tags.Count - 1] : null;
+            if (result == true)
+            {
+                TagService.Export(Tags, saveFileDialog.FileName);
+            }
         }
 
         public async Task Import()
         {
+            string codeBase = Assembly.GetExecutingAssembly().CodeBase;
+            UriBuilder uri = new UriBuilder(codeBase);
+            string uriPath = Uri.UnescapeDataString(uri.Path);
+            string startPath = Path.GetDirectoryName(uriPath);
+
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.InitialDirectory = startPath;
+            openFileDialog.DefaultExt = "json";
+            openFileDialog.AddExtension = true;
+            openFileDialog.Filter = "JSON | *.json";
+            openFileDialog.CheckFileExists = true;
+            var result = openFileDialog.ShowDialog();
+
+            if (result == true)
+            {
+                try
+                {
+                    TagService.Import(Tags, openFileDialog.FileName);
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(String.Format("Exception encountered during import:\n\n{0}", e.Message), "Import Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            }
 
         }
 
-        public async Task Export()
+        public async Task MoveDown()
         {
-
+            var index = Tags.IndexOf(SelectedTag);
+            var tag = SelectedTag;
+            Tags.RemoveAt(index);
+            Tags.Insert(index + 1, tag);
+            SelectedTag = Tags[index + 1];
         }
-        #endregion
+
+        public async Task MoveUp()
+        {
+            var index = Tags.IndexOf(SelectedTag);
+            var tag = SelectedTag;
+            Tags.RemoveAt(index);
+            Tags.Insert(index - 1, tag);
+            SelectedTag = Tags[index - 1];
+        }
 
         public async Task ShowTagDialog(string[] takenTagList)
         {
@@ -181,11 +223,14 @@ namespace Collect.Views
             }
 
         }
+        #endregion
 
-        public void Save()
+        #region Other Methods
+        private void Tags_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            this.RequestClose(true);
+            CanExport = Tags.Count > 0;
         }
+        #endregion
 
         public void Close()
         {

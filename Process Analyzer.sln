@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Collect", "Collect\Collect.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Analyze", "Tune\Analyze.csproj", "{2E29FA4A-B78A-4DFC-B08F-07F2188050F9}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScottPlot", "ScottPlot\ScottPlot.csproj", "{B10C9064-71A3-4EB4-A819-805D3606ECBF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScottPlot.WPF", "ScottPlot.WPF\ScottPlot.WPF.csproj", "{2046E47A-9002-41F4-9C5E-A971DC45E5BE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{2E29FA4A-B78A-4DFC-B08F-07F2188050F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E29FA4A-B78A-4DFC-B08F-07F2188050F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E29FA4A-B78A-4DFC-B08F-07F2188050F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B10C9064-71A3-4EB4-A819-805D3606ECBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B10C9064-71A3-4EB4-A819-805D3606ECBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B10C9064-71A3-4EB4-A819-805D3606ECBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B10C9064-71A3-4EB4-A819-805D3606ECBF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2046E47A-9002-41F4-9C5E-A971DC45E5BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2046E47A-9002-41F4-9C5E-A971DC45E5BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2046E47A-9002-41F4-9C5E-A971DC45E5BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2046E47A-9002-41F4-9C5E-A971DC45E5BE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -35,7 +35,6 @@ namespace Collect.Views
                     else
                         WpfPlot.Plot.XAxis.LockLimits(false);
                 }
-                //XLocked = AutoScroll ? true : XLocked;
             }
         }
         private WpfPlot _wpfPlot;
@@ -44,18 +43,6 @@ namespace Collect.Views
             get { return _wpfPlot; }
             set { SetAndNotify(ref _wpfPlot, value); }
         }
-        //private bool _xLocked;
-        //public bool XLocked
-        //{
-        //    get { return _xLocked; }
-        //    set { SetAndNotify(ref _xLocked, value); }
-        //}
-        //private bool _yLocked;
-        //public bool YLocked
-        //{
-        //    get { return _yLocked; }
-        //    set { SetAndNotify(ref _yLocked, value); }
-        //}
         private int plotTimeSpan;                   // Seconds
         public int PlotTimeSpan
         {
@@ -148,6 +135,7 @@ namespace Collect.Views
             Tags.CollectionChanged += Tags_CollectionChanged;
             // Plot
             WpfPlot = new WpfPlot();
+            var a = WpfPlot.Plot.XAxis.Dims.Min;
             WpfPlot.Plot.YAxis.LockLimits();
             AutoScroll = true;
             //XLocked = true;
@@ -165,7 +153,27 @@ namespace Collect.Views
         #endregion
 
         #region Actions
-        // OPC
+        public async Task ColorChange()
+        {
+            // TODO: make the color changing mechanism more WPF/MVVM-like
+            var tag = SelectedTag;
+            
+            var colorDialog = new System.Windows.Forms.ColorDialog();
+            colorDialog.SolidColorOnly = true;
+            colorDialog.FullOpen = true;
+
+            if (CustomColors != null)
+                colorDialog.CustomColors = CustomColors;
+
+            var dialogResult = colorDialog.ShowDialog();
+            if (dialogResult == System.Windows.Forms.DialogResult.OK)
+            {
+                tag.TraceColor = colorDialog.Color;
+            }
+
+            CustomColors = colorDialog.CustomColors;
+        }
+
         public async Task DataCollectionEnable()
         {
             var definitions = new List<OpcDaItemDefinition>();
@@ -205,45 +213,11 @@ namespace Collect.Views
             IsConnected = false;
         }
 
-        // Tags
-        public async Task ColorChange()
-        {
-            // TODO: make the color changing mechanism more WPF/MVVM-like
-            var tag = SelectedTag;
-            
-            var colorDialog = new System.Windows.Forms.ColorDialog();
-            colorDialog.SolidColorOnly = true;
-            colorDialog.FullOpen = true;
-
-            if (CustomColors != null)
-                colorDialog.CustomColors = CustomColors;
-
-            var dialogResult = colorDialog.ShowDialog();
-            if (dialogResult == System.Windows.Forms.DialogResult.OK)
-            {
-                tag.TraceColor = colorDialog.Color;
-            }
-
-            CustomColors = colorDialog.CustomColors;
-        }
-
-        // Plot
-        //public async Task LockXAxis()
-        //{
-        //    WpfPlot.Plot.XAxis.LockLimits(XLocked = !XLocked);
-        //}
-
-        //public async Task LockYAxis()
-        //{
-        //    WpfPlot.Plot.YAxis.LockLimits(YLocked = !YLocked);
-        //}
-
         public async Task SetAutoScroll()
         {
             AutoScroll = !AutoScroll;
         }
 
-        // Dialog boxes
         public async Task ShowAboutDialog()
         {
             var dialogVm = this.dialogFactory.CreateAboutDialog();
@@ -289,30 +263,7 @@ namespace Collect.Views
         #endregion
 
         #region Other Methods
-        // OPC
-        public void UpdateServerStatus()
-        {
-            if ((Server != null) && (Server.IsConnected == true))
-                ServerStatus = "Connected to " + Server.ServerDescription;
-            else
-                ServerStatus = "Disconnected";
-        }
-
-        public void UpdateCanDataCollectionEnable()
-        {
-            if ((Server != null) && !IsCollecting && Server.IsConnected && (Tags.Count > 0))
-                CanDataCollectionEnable = true;
-            else
-                CanDataCollectionEnable = false;
-        }
-
-        private void Tags_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            UpdateCanDataCollectionEnable();
-        }
-
-        // Plot
-        public void PlotAllTags(int timeSpanSeconds)
+        private void PlotAllTags(int timeSpanSeconds)
         {
             // Clear the plot
             WpfPlot.Plot.Clear();
@@ -346,6 +297,27 @@ namespace Collect.Views
                     WpfPlot.Plot.Add(splt);
                 }
             }
+        }
+
+        private void Tags_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            UpdateCanDataCollectionEnable();
+        }
+
+        private void UpdateCanDataCollectionEnable()
+        {
+            if ((Server != null) && !IsCollecting && Server.IsConnected && (Tags.Count > 0))
+                CanDataCollectionEnable = true;
+            else
+                CanDataCollectionEnable = false;
+        }
+
+        private void UpdateServerStatus()
+        {
+            if ((Server != null) && (Server.IsConnected == true))
+                ServerStatus = "Connected to " + Server.ServerDescription;
+            else
+                ServerStatus = "Disconnected";
         }
         #endregion
     }

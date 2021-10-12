@@ -3,7 +3,7 @@ using System;
 
 namespace Collect.Models
 {
-    class File : PropertyChangedBase
+    class DataFile : PropertyChangedBase
     {
         #region Properties
         private string _filePath;
@@ -18,7 +18,7 @@ namespace Collect.Models
         #endregion
 
         // Constructor
-        public File(string filepath)
+        public DataFile(string filepath)
         {
             FilePath = filepath;
             _fileDateTime = DateTime.Now;

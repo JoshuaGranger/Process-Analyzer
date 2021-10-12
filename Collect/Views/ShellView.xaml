@@ -19,6 +19,14 @@
             <MenuItem Header="_Tags">
                 <MenuItem Header="Open _Tag Manager" Command="{s:Action ShowTagManagerDialog}" IsEnabled="{Binding IsCollecting, Converter={StaticResource NotConverter}}"/>
             </MenuItem>
+            <MenuItem Header="_Data">
+                <MenuItem Header="_Enable data collection" Command="{s:Action DataCollectionEnable}" IsEnabled="{Binding IsCollecting, Converter={StaticResource NotConverter}}"/>
+                <MenuItem Header="_Disable data collection" Command="{s:Action DataCollectionDisable}" IsEnabled="{Binding IsCollecting}"/>
+                <Separator/>
+                <MenuItem Header="_Change update rate" Command="{s:Action ShowRateDialog}" IsEnabled="{Binding IsCollecting, Converter={StaticResource NotConverter}}"/>
+                <Separator/>
+                <MenuItem Header="_Save data to file" Command="{s:Action ShowDatalogDialog}" IsEnabled="False"/>
+            </MenuItem>
             <MenuItem Header="_Plot">
                 <!--MenuItem Header="Lock _X Axis" Command="{s:Action LockXAxis}"
                           IsChecked="{Binding XLocked}" IsEnabled="{Binding AutoScroll, Converter={StaticResource NotConverter}}"/>
@@ -29,14 +37,6 @@
                 <MenuItem Header="Scale traces _all time" Command="{s:Action ScaleAllTime}"/>
                 <MenuItem Header="_Enable autoscale Y Axis" IsChecked="{Binding AutoScale}" Command="{s:Action SetAutoScale}"/-->
                 <MenuItem Header="Enable _AutoScroll" IsChecked="{Binding AutoScroll}" Command="{s:Action SetAutoScroll}"/>
-            </MenuItem>
-            <MenuItem Header="_Data">
-                <MenuItem Header="_Enable data collection" Command="{s:Action DataCollectionEnable}" IsEnabled="{Binding IsCollecting, Converter={StaticResource NotConverter}}"/>
-                <MenuItem Header="_Disable data collection" Command="{s:Action DataCollectionDisable}" IsEnabled="{Binding IsCollecting}"/>
-                <Separator/>
-                <MenuItem Header="_Change update rate" Command="{s:Action ShowRateDialog}" IsEnabled="{Binding IsCollecting, Converter={StaticResource NotConverter}}"/>
-                <Separator/>
-                <MenuItem Header="_Save data to file" Command="{s:Action ShowDatalogDialog}" IsEnabled="False"/>
             </MenuItem>
             <MenuItem Header="_Help">
                 <MenuItem Header="_About" Command="{s:Action ShowAboutDialog}"/>
@@ -52,9 +52,11 @@
                 <Label Content="Data Update Rate (ms):"/>
                 <Label Content="{Binding GroupUpdateRate}"/>
             </StackPanel>
-            <StatusBarItem HorizontalAlignment="Right">
-                <Label Content="{Binding SelectedTag.TagId}"/>
-            </StatusBarItem>
+            <Separator/>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Plot Time Span (sec):"/>
+                <Label Content="{Binding PlotTimeSpan}"/>
+            </StackPanel>
         </StatusBar>
         <Grid>
             <Grid.RowDefinitions>

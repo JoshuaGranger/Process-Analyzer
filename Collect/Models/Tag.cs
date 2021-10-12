@@ -1,15 +1,15 @@
-﻿using Stylet;
-using System.Collections.Generic;
-using TitaniumAS.Opc.Client.Da;
+﻿using Newtonsoft.Json;
+using Stylet;
 
 namespace Collect.Models
 {
+    [JsonObject(MemberSerialization.OptIn)]
     public class Tag : PropertyChangedBase, ITagBase
     {
         #region Properties
         // TagBase
         private string tagId;
-        public string TagId
+        [JsonProperty] public string TagId
         {
             get { return tagId; }
             set
@@ -18,13 +18,13 @@ namespace Collect.Models
             }
         }
         private string _tagDesc;
-        public string TagDesc
+        [JsonProperty] public string TagDesc
         {
             get { return _tagDesc; }
             set { SetAndNotify(ref _tagDesc, value); }
         }
         private System.Drawing.Color _traceColor;
-        public System.Drawing.Color TraceColor
+        [JsonProperty] public System.Drawing.Color TraceColor
         {
             get { return _traceColor; }
             set { SetAndNotify(ref _traceColor, value); }

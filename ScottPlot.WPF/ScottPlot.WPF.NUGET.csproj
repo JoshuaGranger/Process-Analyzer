@@ -1,0 +1,50 @@
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <TargetFrameworks>net461;net472;netcoreapp3.1;net5.0-windows</TargetFrameworks>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <AssemblyName>ScottPlot.WPF</AssemblyName>
+    <OutputType>Library</OutputType>
+    <RootNamespace>ScottPlot</RootNamespace>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
+    <PackageIcon>icon.png</PackageIcon>
+    <Description>This package provides a WPF control to interactively display ScottPlot graphs in WPF applications. This package targets both .NET Framework and .NET Core.</Description>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>http://swharden.com/scottplot/</PackageProjectUrl>
+    <PackageTags>plot graph data chart signal line bar heatmap scatter control interactive WPF</PackageTags>
+    <PackageReleaseNotes>https://github.com/swharden/ScottPlot/releases</PackageReleaseNotes>
+    <IncludeSymbols>true</IncludeSymbols>
+    <Version>4.1.24</Version>
+    <AssemblyVersion>4.1.24.0</AssemblyVersion>
+    <FileVersion>4.1.24.0</FileVersion>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
+    <DelaySign>false</DelaySign>
+    <Authors>Scott Harden</Authors>
+    <Company>Harden Technologies, LLC</Company>
+    <LangVersion>latest</LangVersion>
+    <DebugType>portable</DebugType>
+    <!--<SymbolPackageFormat>snupkg</SymbolPackageFormat> -->    <!-- https://github.com/NuGet/Home/issues/10791 -->
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <Deterministic>true</Deterministic>
+    <DeterministicSourcePaths Condition="'$(EnableSourceLink)' == ''">false</DeterministicSourcePaths>    <!-- https://github.com/dotnet/sourcelink/issues/91 -->
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Drawing.Common" Version="4.6.1" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <ProjectReference Include="..\..\ScottPlot\ScottPlot.csproj" />
+    <None Include="icon.png" Pack="true" PackagePath="\" />
+    <None Include="icon.ico" Pack="true" PackagePath="\" />
+    <None Include="README.txt" Pack="true" PackagePath="\" />
+    <None Include="README.md" Pack="true" PackagePath="\" />
+    <None Include="VisualStudioToolsManifest.xml" Pack="true" PackagePath="tools" />
+  </ItemGroup>
+
+</Project>
